@@ -84,8 +84,8 @@ function resort() {
         output.value = sorted.join("")
         output.hidden = false
     } catch (e) {
-        responseA.innerText = responses[currentResponseA]
-        responseB.innerText = responses[currentResponseB]
+        responseA.innerText = responses[currentResponseA] + " (" + countWords(responses[currentResponseA]) + ")"
+        responseB.innerText = responses[currentResponseB] + " (" + countWords(responses[currentResponseB]) + ")"
     }
 }
 
