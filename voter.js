@@ -43,6 +43,7 @@ let output = document.querySelector("#output")
 let letterFlag = document.querySelector("#letter")
 let letterFlagBox = document.querySelector("#letterFlagBox")
 let progress = document.querySelector("#progress")
+let explanation = document.querySelector("#explanation")
 
 let responses = {
 
@@ -80,6 +81,7 @@ go.addEventListener("click", e => {
     go.hidden = true
     progress.style.display = "block"
     letterFlagBox.style.display = "none"
+    explanation.style.display = "none"
     yourResponse.hidden = true
     responseA.hidden = false
     responseB.hidden = false
