@@ -38,8 +38,8 @@ let responses = {
 
 }
 
-const aGb = 1
-const bGa = -1
+const aGb = -1
+const bGa = 1
 
 let yourResponseLetter = ""
 let currentResponseA = ""
@@ -48,7 +48,6 @@ let currentResponseB = ""
 go.addEventListener("click", e => {
     // parse responses
     let responsesLines = responsesText.value.split("\n")
-    console.log(responsesLines)
     let i = 0
     for (let responseLine of responsesLines) {
         if (letterFlag.checked) {
@@ -76,7 +75,7 @@ go.addEventListener("click", e => {
 
 function resort() {
     try {
-        let sorted = Object.keys(responses).sort((a, b) => { // sort not in place
+        let sorted = Object.keys(responses).slice().sort((a, b) => { // sort not in place
             if (comparisonCache.includes(b + ">" + a)) {
                 return bGa
             } else if (comparisonCache.includes(a + ">" + b)) {
@@ -94,10 +93,11 @@ function resort() {
             }
         })
         output.value = sorted.join("")
-        responsesText.textContent = ""
-        for (let letter in sorted) {
-            responsesText.textContent += letter + " " + responses[letter] + "\n"
+        let resorted = ""
+        for (let letter of sorted) {
+            resorted += letter + " " + responses[letter] + "\n"
         }
+        responsesText.value = resorted
         if (!letterFlag.checked) output.hidden = false
         responseA.hidden = true
         responseB.hidden = true
