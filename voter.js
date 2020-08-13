@@ -18,7 +18,7 @@ function countWords(str) {
 function splitOnce(s, on) {
     var components = s.split(on);
     return [components.shift(), components.join(' ')]
- }
+}
 
 let comparisonCache = [
     // eg "X>A"
