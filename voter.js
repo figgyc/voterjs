@@ -80,11 +80,15 @@ function resort() {
                 throw "Unknown comparison"
             }
         })
-        // TODO: output
         output.value = sorted.join("")
+        responsesText.textContent = ""
+        for (let letter in sorted) {
+            responsesText.textContent += letter + " " + responses[letter] + "\n"
+        }
         output.hidden = false
         responseA.hidden = true
         responseB.hidden = true
+        responsesText.hidden = false
     } catch (e) {
         responseA.innerText = responses[currentResponseA] + " (" + countWords(responses[currentResponseA]) + ")"
         responseB.innerText = responses[currentResponseB] + " (" + countWords(responses[currentResponseB]) + ")"
