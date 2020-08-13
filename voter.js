@@ -16,7 +16,7 @@ function countWords(str) {
 // https://stackoverflow.com/a/2878726/2758631
 // creds to Nick Craver, this function is under cc by-sa 4
 function splitOnce(s, on) {
-    var s = string.split(on);
+    var components = s.split(on);
     return [components.shift(), components.join(' ')]
  }
 
