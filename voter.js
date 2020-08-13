@@ -91,10 +91,8 @@ function resort() {
     try {
         let sorted = Object.keys(responses).slice().sort((a, b) => { // sort not in place
             if (comparisonCache.includes(b + ">" + a)) {
-                progress.value++
                 return bGa
             } else if (comparisonCache.includes(a + ">" + b)) {
-                progress.value++
                 return aGb
             } else if (a == yourResponseLetter) {
                 comparisonCache.push(a + ">" + b)
