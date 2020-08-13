@@ -31,6 +31,9 @@ let go = document.querySelector("#go")
 let responseA = document.querySelector("#responseA")
 let responseB = document.querySelector("#responseB")
 let output = document.querySelector("#output")
+let letterFlag = document.querySelector("#letter")
+let letterFlagBox = document.querySelector("#letterFlagBox")
+
 let responses = {
 
 }
@@ -46,17 +49,24 @@ go.addEventListener("click", e => {
     // parse responses
     let responsesLines = responsesText.value.split("\n")
     console.log(responsesLines)
+    let i = 0
     for (let responseLine of responsesLines) {
-        let responseSplit = splitOnce(responseLine, " ")
-        let letter = responseSplit[0]
-        let response = responseSplit[1]
-        responses[letter] = response
+        if (letterFlag.checked) {
+            let responseSplit = splitOnce(responseLine, /[\t ]+/)
+            let letter = responseSplit[0]
+            let response = responseSplit[1]
+            responses[letter] = response
+        } else {
+            responses[i] = responseLine
+        }
+        i++
     }
     yourResponseLetter = yourResponse.value
 
     // prep ui
     responsesText.hidden = true
     go.hidden = true
+    letterFlagBox.style.display = "none"
     yourResponse.hidden = true
     responseA.hidden = false
     responseB.hidden = false
@@ -88,7 +98,7 @@ function resort() {
         for (let letter in sorted) {
             responsesText.textContent += letter + " " + responses[letter] + "\n"
         }
-        output.hidden = false
+        if (!letterFlag.checked) output.hidden = false
         responseA.hidden = true
         responseB.hidden = true
         responsesText.hidden = false
