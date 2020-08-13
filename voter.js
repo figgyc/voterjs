@@ -13,6 +13,11 @@ function countWords(str) {
       .length;
  }
 
+function twowSplit(str) {
+    if (str.includes("\t")) return splitOnce(str, "\t")
+    return splitOnce(str, " ")
+}
+
 // https://stackoverflow.com/a/2878726/2758631
 // creds to Nick Craver, this function is under cc by-sa 4
 function splitOnce(s, on) {
@@ -48,12 +53,14 @@ let currentResponseB = ""
 go.addEventListener("click", e => {
     // parse responses
     let responsesLines = responsesText.value.split("\n")
+    responsesLines.filter(line => line != "")
     let i = 0
     for (let responseLine of responsesLines) {
         if (letterFlag.checked) {
-            let responseSplit = splitOnce(responseLine, /[\t ]+/)
+            let responseSplit = twowSplit(responseLine)
             let letter = responseSplit[0].slice(-1)
             let response = responseSplit[1]
+            console.log(responseLine, responseSplit, letter, response, responsesLines)
             responses[letter] = response
         } else {
             responses[i] = responseLine
