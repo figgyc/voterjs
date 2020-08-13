@@ -13,11 +13,11 @@ function countWords(str) {
       .length;
  }
 
-// https://stackoverflow.com/a/54708145/2758631
-// creds to andyhasit, this function is under cc by-sa 4
+// https://stackoverflow.com/a/2878726/2758631
+// creds to Nick Craver, this function is under cc by-sa 4
 function splitOnce(s, on) {
-    [first, ...rest] = s.split(on)
-    return [first, rest.length > 0? rest.join(on) : null]
+    var s = string.split(on);
+    return [components.shift(), components.join(' ')]
  }
 
 let comparisonCache = [
