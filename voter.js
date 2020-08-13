@@ -18,6 +18,10 @@ function twowSplit(str) {
     return splitOnce(str, " ")
 }
 
+function permutations(n) {
+    return n(n-1)/2
+}
+
 // https://stackoverflow.com/a/2878726/2758631
 // creds to Nick Craver, this function is under cc by-sa 4
 function splitOnce(s, on) {
@@ -38,6 +42,7 @@ let responseB = document.querySelector("#responseB")
 let output = document.querySelector("#output")
 let letterFlag = document.querySelector("#letter")
 let letterFlagBox = document.querySelector("#letterFlagBox")
+let progress = document.querySelector("#progress")
 
 let responses = {
 
@@ -70,8 +75,10 @@ go.addEventListener("click", e => {
     yourResponseLetter = yourResponse.value
 
     // prep ui
+    progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
     responsesText.hidden = true
     go.hidden = true
+    progress.style.display = "block"
     letterFlagBox.style.display = "none"
     yourResponse.hidden = true
     responseA.hidden = false
@@ -84,14 +91,18 @@ function resort() {
     try {
         let sorted = Object.keys(responses).slice().sort((a, b) => { // sort not in place
             if (comparisonCache.includes(b + ">" + a)) {
+                progress.value++
                 return bGa
             } else if (comparisonCache.includes(a + ">" + b)) {
+                progress.value++
                 return aGb
             } else if (a == yourResponseLetter) {
                 comparisonCache.push(a + ">" + b)
+                progress.value++
                 return aGb
             } else if (b == yourResponseLetter) {
                 comparisonCache.push(b + ">" + a)
+                progress.value++
                 return bGa
             } else {
                 currentResponseA = a
@@ -105,7 +116,7 @@ function resort() {
             resorted += letter + " " + responses[letter] + "\n"
         }
         responsesText.value = resorted
-        if (!letterFlag.checked) output.hidden = false
+        if (letterFlag.checked) output.hidden = false
         responseA.hidden = true
         responseB.hidden = true
         responsesText.hidden = false
@@ -118,8 +129,10 @@ function resort() {
 function onResponseClick(e) {
     if (e.target.id == "responseA") {
         comparisonCache.push(currentResponseA + ">" + currentResponseB)
+        progress.value++
     } else {
         comparisonCache.push(currentResponseB + ">" + currentResponseA)
+        progress.value++
     }
 
     resort()
