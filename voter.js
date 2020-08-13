@@ -52,7 +52,7 @@ go.addEventListener("click", e => {
     for (let responseLine of responsesLines) {
         if (letterFlag.checked) {
             let responseSplit = splitOnce(responseLine, /[\t ]+/)
-            let letter = responseSplit[0]
+            let letter = responseSplit[0].slice(-1)
             let response = responseSplit[1]
             responses[letter] = response
         } else {
