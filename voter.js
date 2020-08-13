@@ -19,7 +19,7 @@ function twowSplit(str) {
 }
 
 function permutations(n) {
-    return n(n-1)/2
+    return n * (n-1)/2
 }
 
 // https://stackoverflow.com/a/2878726/2758631
