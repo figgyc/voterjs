@@ -1,0 +1,2 @@
+# Voter.js
+A program designed to make it easier to rank order a set of strings, intended for use in [Ten Words Of Wisdom](https://www.youtube.com/playlist?list=PLrUdxfaFpuuKxFbzHimw1p43yPf7oBRj4)-style competitions.

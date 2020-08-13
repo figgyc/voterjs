@@ -1,0 +1,44 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter.js</title>
+    <style>
+        html {
+            color: #ddd;
+            background: #111111;
+            font-family: Consolas, monospace !important;
+        }
+        input, button, textarea {
+            background: black;
+            color:white;
+            border: 1px solid white;
+            font-family: Consolas, monospace !important;
+            font-size: 12pt;
+        }
+
+        input, button {
+            min-height: 1.5em;
+            width: 45%;
+        }
+        textarea {
+            resize: none;
+            height: 10em;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h2>figgyc's Voter.js</h2>
+    <small>additional thanks to <a href="https://stackoverflow.com/a/40385425/2758631">these</a> <a href="https://stackoverflow.com/a/40385425/2758631">two</a> whose code i took from stack overflow (cc-by sa 4), check out the <a href="https://github.com/figgyc/voterjs">source code</a> </small>
+    <textarea placeholder="Responses (seperate letter and response with 1 space, one response per line)" id="responses"></textarea> <br>
+    <input id="yours" type="text" placeholder="Your response letter (or leave blank)" />
+    <button id="go">Go</button> <br> <br>
+
+    <button id="responseA" hidden></button><br>
+    <button id="responseB" hidden></button><br>
+
+    <input type="text" id="output" hidden />
+    <script src="voter.js" async defer></script>
+</body>
+</html>
