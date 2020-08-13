@@ -19,7 +19,7 @@ function twowSplit(str) {
 }
 
 function permutations(n) {
-    return n * (n-1)/2
+    return n*n // worst possible for quicksort, should be accurate enough
 }
 
 // https://stackoverflow.com/a/2878726/2758631
