@@ -35,6 +35,9 @@ let responses = {
 
 }
 
+const aGb = 1
+const bGa = -1
+
 let yourResponseLetter = ""
 let currentResponseA = ""
 let currentResponseB = ""
@@ -65,15 +68,15 @@ function resort() {
     try {
         let sorted = Object.keys(responses).sort((a, b) => { // sort not in place
             if (comparisonCache.includes(b + ">" + a)) {
-                return b > a
+                return bGa
             } else if (comparisonCache.includes(a + ">" + b)) {
-                return a > b
+                return aGb
             } else if (a == yourResponseLetter) {
                 comparisonCache.push(a + ">" + b)
-                return a > b
+                return aGb
             } else if (b == yourResponseLetter) {
                 comparisonCache.push(b + ">" + a)
-                return b > a
+                return bGa
             } else {
                 currentResponseA = a
                 currentResponseB = b
