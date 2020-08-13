@@ -19,7 +19,7 @@ function twowSplit(str) {
 }
 
 function permutations(n) {
-    return n*n // worst possible for quicksort, should be accurate enough
+    return n* Math.log10(n) // avg for quicksort, should be accurate enough
 }
 
 // https://stackoverflow.com/a/2878726/2758631
@@ -98,11 +98,11 @@ function resort() {
                 return aGb
             } else if (a == yourResponseLetter) {
                 comparisonCache.push(a + ">" + b)
-                progress.value++
+                progress.value = comparisonCache.length
                 return aGb
             } else if (b == yourResponseLetter) {
                 comparisonCache.push(b + ">" + a)
-                progress.value++
+                progress.value = comparisonCache.length
                 return bGa
             } else {
                 currentResponseA = a
@@ -129,10 +129,10 @@ function resort() {
 function onResponseClick(e) {
     if (e.target.id == "responseA") {
         comparisonCache.push(currentResponseA + ">" + currentResponseB)
-        progress.value++
+        progress.value = comparisonCache.length
     } else {
         comparisonCache.push(currentResponseB + ">" + currentResponseA)
-        progress.value++
+        progress.value = comparisonCache.length
     }
 
     resort()
