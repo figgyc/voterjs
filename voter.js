@@ -52,7 +52,7 @@ let responses = {
 const aGb = -1
 const bGa = 1
 
-let yourResponseLetter = ""
+let yourResponseLetters = []
 let currentResponseA = ""
 let currentResponseB = ""
 
@@ -73,7 +73,7 @@ go.addEventListener("click", e => {
         }
         i++
     }
-    yourResponseLetter = yourResponse.value
+    yourResponseLetters = yourResponse.value.replace(" ", "").split(",")
 
     // prep ui
     progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
@@ -96,11 +96,11 @@ function resort() {
                 return bGa
             } else if (comparisonCache.includes(a + ">" + b)) {
                 return aGb
-            } else if (a == yourResponseLetter) {
+            } else if (yourResponseLetters.includes(a)) {
                 comparisonCache.push(a + ">" + b)
                 progress.value = comparisonCache.length
                 return aGb
-            } else if (b == yourResponseLetter) {
+            } else if (yourResponseLetters.includes(b)) {
                 comparisonCache.push(b + ">" + a)
                 progress.value = comparisonCache.length
                 return bGa
