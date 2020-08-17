@@ -19,7 +19,7 @@ function twowSplit(str) {
 }
 
 function permutations(n) {
-    return n* Math.log10(n) // avg for quicksort, should be accurate enough
+    return n* Math.log2(n) // avg for quicksort, should be accurate enough
 }
 
 // https://stackoverflow.com/a/2878726/2758631
