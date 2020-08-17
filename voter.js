@@ -14,7 +14,7 @@ function countWords(str) {
  }
 
 function twowSplit(str) {
-    if (str.includes("\t")) return splitOnce(str, "\t")
+    if (str.includes("\t")) return splitOnce(str, /\t+/)
     return splitOnce(str, " ")
 }
 
