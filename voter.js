@@ -8,6 +8,8 @@
 // creds to "OK sure", this function is under cc by-sa 4
 function countWords(str) {
     return str
+      .replace(/[!.,:;?]/, " ")
+      //.replace(/[]/, " ")
       .split(' ')
       .filter(function(n) { return n != '' })
       .length;
