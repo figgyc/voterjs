@@ -124,8 +124,8 @@ function resort() {
         responseB.hidden = true
         responsesText.hidden = false
     } catch (e) {
-        responseA.innerText = responses[currentResponseA] + wordCount.checked ? " (" + countWords(responses[currentResponseA]) + ")" : ""
-        responseB.innerText = responses[currentResponseB] + wordCount.checked ? " (" + countWords(responses[currentResponseB]) + ")" : ""
+        responseA.innerText = responses[currentResponseA] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseA]) + ")") : "" )
+        responseB.innerText = responses[currentResponseB] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseB]) + ")") : "" )
     }
 }
 
