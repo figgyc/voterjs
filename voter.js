@@ -43,6 +43,7 @@ let responseA = document.querySelector("#responseA")
 let responseB = document.querySelector("#responseB")
 let output = document.querySelector("#output")
 let letterFlag = document.querySelector("#letter")
+let wordCount = document.querySelector("#wordcount")
 let letterFlagBox = document.querySelector("#letterFlagBox")
 let progress = document.querySelector("#progress")
 let explanation = document.querySelector("#explanation")
@@ -123,8 +124,8 @@ function resort() {
         responseB.hidden = true
         responsesText.hidden = false
     } catch (e) {
-        responseA.innerText = responses[currentResponseA] + " (" + countWords(responses[currentResponseA]) + ")"
-        responseB.innerText = responses[currentResponseB] + " (" + countWords(responses[currentResponseB]) + ")"
+        responseA.innerText = responses[currentResponseA] + wordCount.checked ? " (" + countWords(responses[currentResponseA]) + ")" : ""
+        responseB.innerText = responses[currentResponseB] + wordCount.checked ? " (" + countWords(responses[currentResponseB]) + ")" : ""
     }
 }
 

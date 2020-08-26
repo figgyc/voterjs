@@ -60,7 +60,11 @@
         This tool lets you rank a set of things from best to worst. It's designed for competitions called <a href="https://discord.gg/kEDbDRm">TWOW</a>s and similar, but you could use it for anything you want really. Just paste or type all the things you want to vote on in the box! If you're doing a TWOW, make sure the letter and response are seperated with one or more tabs, or a space (pro tip: if you copy it from a google sheet then they should be already), and click Go. If you're sorting something which doesnt use letters then untick the box and then click Go. Note: the progress bar is an average, it might take less or it might take more then that but it should be about right! Don't worry if it's full and you're still not done. If one of the responses represents you then put it in that textbox (if there's multiple seperate with commas).
     </div>
     <textarea placeholder="Responses (one per line)" id="responses"></textarea> <br>
-    <input id="yours" type="text" placeholder="Your response letter/line number(s) (optional, seperate with commas)" /> <span id="letterFlagBox"> <input type="checkbox" id="letter" name="letter" checked /> <label for="letter">Responses are input with letters at the start</label> </span>
+    <input id="yours" type="text" placeholder="Your response letter/line number(s) (optional, seperate with commas)" />
+    <span id="letterFlagBox">
+        <input type="checkbox" id="letter" name="letter" checked /> <label for="letter">Responses are input with letters at the start</label> 
+        <input type="checkbox" id="wordcount" name="wordcount" checked /> <label for="wordcount">Show word count (may not always be 100% right, always double check)</label> 
+    </span>
     <button id="go">Go</button> <br> <br>
 
     <progress id="progress" value="0" style="display: none;"></progress> <br>
