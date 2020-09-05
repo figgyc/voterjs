@@ -50,6 +50,10 @@ let progress = document.querySelector("#progress")
 let explanation = document.querySelector("#explanation")
 let review = document.querySelector("#review")
 let reviewList = document.querySelector("#reviewList")
+let rank = document.querySelector("#rank")
+let save = document.querySelector("#save")
+let load = document.querySelector("#load")
+let savestates = document.querySelector("#savestates")
 
 let responses = {
 
@@ -72,7 +76,6 @@ go.addEventListener("click", e => {
             let responseSplit = twowSplit(responseLine)
             let letter = responseSplit[0].slice(-1)
             let response = responseSplit[1]
-            console.log(responseLine, responseSplit, letter, response, responsesLines)
             responses[letter] = response
         } else {
             responses[i] = responseLine
@@ -84,11 +87,9 @@ go.addEventListener("click", e => {
     // prep ui
     progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
     responsesText.hidden = true
-    go.hidden = true
-    progress.style.display = "block"
+    rank.style.display = "block"
     letterFlagBox.style.display = "none"
     explanation.style.display = "none"
-    yourResponse.hidden = true
     responseA.hidden = false
     responseB.hidden = false
 
@@ -130,6 +131,11 @@ function resort() {
         responseB.hidden = true
         review.style.display = "block"
     } catch (e) {
+        localStorage.setItem("autosave", JSON.stringify({
+            comparisonCache: comparisonCache,
+            responses: responses
+        }))
+        addSavestate("autosave")
         responseA.innerText = responses[currentResponseA] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseA]) + ")") : "" )
         responseB.innerText = responses[currentResponseB] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseB]) + ")") : "" )
     }
@@ -162,6 +168,71 @@ function onResponseClick(e) {
 
     resort()
 }
+
+function addSavestate(name) {
+    let names = JSON.parse(localStorage.getItem("savestates"))
+    if (names == null) {
+        names = []
+    }
+    if (!names.includes(name)) {
+        names.push(name)
+        localStorage.setItem("savestates", JSON.stringify(names))
+    }
+}
+
+save.addEventListener("click", () => {
+    let name = prompt("Pick a unique name for your savestate. (don't pick 'autosave' or 'savestates')")
+    if (name != 'autosave' && name != "savestates" && name != null) {
+        localStorage.setItem(name, JSON.stringify({
+            comparisonCache: comparisonCache,
+            responses: responses
+        }))
+        addSavestate(name)
+    }
+})
+
+load.addEventListener("click", () => {
+    savestates.style.display = "block"
+    explanation.style.display = "none"
+    responsesText.style.display = "none"
+    letterFlagBox.style.display = "none"
+
+    let names = JSON.parse(localStorage.getItem("savestates"))
+    for (let savestateName of names) {
+        let li = document.createElement("li")
+        let button = document.createElement("button")
+        button.innerText = savestateName
+        button.addEventListener("click", () => {
+            let savestate = JSON.parse(localStorage.getItem(savestateName))
+            comparisonCache = savestate.comparisonCache
+            responses = savestate.responses
+
+            progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
+            responsesText.hidden = true
+            rank.style.display = "block"
+            letterFlagBox.style.display = "none"
+            explanation.style.display = "none"
+            savestates.style.display = "none"
+            responseA.hidden = false
+            responseB.hidden = false
+
+            resort()
+        })
+        li.appendChild(button)
+        let deleteBtn = document.createElement("button")
+        deleteBtn.innerText = "×"
+        deleteBtn.addEventListener("click", () => {
+            if (confirm("Are you sure you want to delete "  + savestateName + "?")) {
+                let names = JSON.parse(localStorage.getItem("savestates"))
+                localStorage.setItem("savestates", JSON.stringify(names.filter(item => item !== savestateName)))
+                savestates.removeChild(li)
+            }
+        })
+        li.appendChild(deleteBtn)
+        savestates.appendChild(li)
+    }
+})
+
 
 responseA.addEventListener("click", onResponseClick)
 responseB.addEventListener("click", onResponseClick)

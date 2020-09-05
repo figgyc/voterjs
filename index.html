@@ -61,19 +61,30 @@
     <h2>figgyc's Voter.js</h2>
     <div id="explanation">
         <small>additional thanks to <a href="https://stackoverflow.com/a/2878726/2758631">these</a> <a href="https://stackoverflow.com/a/40385425/2758631">two</a> whose code i took from stack overflow (cc-by sa 4), check out the <a href="https://github.com/figgyc/voterjs">source code</a>, also shoutout to 96 LB for the original voter.exe idea </small> <br />
-        This tool lets you rank a set of things from best to worst. It's designed for competitions called <a href="https://discord.gg/kEDbDRm">TWOW</a>s and similar, but you could use it for anything you want really. Just paste or type all the things you want to vote on in the box! If you're doing a TWOW, make sure the letter and response are seperated with one or more tabs, or a space (pro tip: if you copy it from a google sheet then they should be already), and click Go. If you're sorting something which doesnt use letters then untick the box and then click Go. Note: the progress bar is an average, it might take less or it might take more then that but it should be about right! Don't worry if it's full and you're still not done. If one of the responses represents you then put it in that textbox (if there's multiple seperate with commas).
+        This tool lets you rank a set of things from best to worst. It's designed for competitions called <a href="https://discord.gg/kEDbDRm">TWOW</a>s and similar,
+        but you could use it for anything you want really. Just paste or type all the things you want to vote on in the box!
+        If you're doing a TWOW, make sure the letter and response are seperated with one or more tabs, or a space (pro tip: you can copy straight from Google Sheets), and click Go.
+        Otherwise untick the box first.
+        Note: the progress bar is an average, it might take less or it might take more then that but it should be about right! Don't worry if it's full and you're still not done.
+        Ranking can take a while! Your progress is automatically saved, you can reload it by loading the "autosave" savestate, or save with a custom name if you want to come back after ranking something else! (This is stored on your computer using localStorage)
     </div>
     <textarea placeholder="Responses (one per line)" id="responses"></textarea> <br>
-    <input id="yours" type="text" placeholder="Your response letter/line number(s) (optional, seperate with commas)" />
     <span id="letterFlagBox">
+        <input id="yours" type="text" placeholder="Your response letter/line number(s) (optional, seperate with commas)" />
         <input type="checkbox" id="letter" name="letter" checked /> <label for="letter">Responses are input with letters at the start</label> 
-        <input type="checkbox" id="wordcount" name="wordcount" checked /> <label for="wordcount">Show word count (may not always be 100% right, always double check)</label> 
+        <input type="checkbox" id="wordcount" name="wordcount" checked /> <label for="wordcount">Show word count (may not always be 100% right, always double check)</label>
+        <button id="go">Go</button> <button id="load">Load savestate</button> <br> <br>
     </span>
-    <button id="go">Go</button> <br> <br>
 
-    <progress id="progress" value="0" style="display: none;"></progress> <br>
-    <button id="responseA" hidden></button><br>
-    <button id="responseB" hidden></button><br>
+    <ul id="savestates" style="display: none">
+    </ul>
+
+    <div id="rank" style="display: none">
+        <progress id="progress" value="0" style="display: none;"></progress> <br>
+        <button id="responseA" ></button><br>
+        <button id="responseB" ></button><br>
+        <button id="save">Save your progress</button><br>
+    </div>
 
     <div id="review" style="display: none">
         <h2>Review your ranking</h2>
