@@ -46,6 +46,10 @@
             background-color: yellow
         }
 
+        ul#reviewList {
+            list-style-image: url("selector.svg");
+        }
+
         @media(max-width: 800px) {
             #responseA, #responseB, #yours, #progress {
                 width: 100%;
@@ -71,7 +75,15 @@
     <button id="responseA" hidden></button><br>
     <button id="responseB" hidden></button><br>
 
+    <div id="review" style="display: none">
+        <h2>Review your ranking</h2>
+        <p>Always double check your list to ensure there are no outliers. You can drag around each response; on mobile, you might have to hold down a few seconds to drag instead of scroll.</p>
+        <ul id="reviewList"></ul><br>
+        <button id="done">Done</button>
+    </div>
+
     <input type="text" id="output" hidden readonly />
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" async></script>
     <script src="voter.js" async defer></script>
 </body>
 </html>

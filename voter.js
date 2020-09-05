@@ -39,6 +39,7 @@ let comparisonCache = [
 let responsesText = document.querySelector("#responses")
 let yourResponse = document.querySelector("#yours")
 let go = document.querySelector("#go")
+let done = document.querySelector("#done")
 let responseA = document.querySelector("#responseA")
 let responseB = document.querySelector("#responseB")
 let output = document.querySelector("#output")
@@ -47,6 +48,8 @@ let wordCount = document.querySelector("#wordcount")
 let letterFlagBox = document.querySelector("#letterFlagBox")
 let progress = document.querySelector("#progress")
 let explanation = document.querySelector("#explanation")
+let review = document.querySelector("#review")
+let reviewList = document.querySelector("#reviewList")
 
 let responses = {
 
@@ -62,7 +65,7 @@ let currentResponseB = ""
 go.addEventListener("click", e => {
     // parse responses
     let responsesLines = responsesText.value.split("\n")
-    responsesLines.filter(line => line != "")
+    responsesLines.filter(line => {return (line != "" && line != " ")})
     let i = 0
     for (let responseLine of responsesLines) {
         if (letterFlag.checked) {
@@ -113,20 +116,39 @@ function resort() {
                 throw "Unknown comparison"
             }
         })
-        output.value = sorted.join("")
-        let resorted = ""
+        // done sorting
         for (let letter of sorted) {
-            resorted += letter + " " + responses[letter] + "\n"
+            let element = document.createElement("li")
+            element.responseCode = letter
+            element.innerText = responses[letter]
+            reviewList.appendChild(element)
         }
-        responsesText.value = resorted
-        if (letterFlag.checked) output.hidden = false
+        Sortable.create(reviewList, {
+            animation: 150,
+        })
         responseA.hidden = true
         responseB.hidden = true
-        responsesText.hidden = false
+        review.style.display = "block"
     } catch (e) {
         responseA.innerText = responses[currentResponseA] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseA]) + ")") : "" )
         responseB.innerText = responses[currentResponseB] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseB]) + ")") : "" )
     }
+}
+
+function finish() {
+    let sorted = []
+    for (let element of reviewList.children) {
+        sorted.push(element.responseCode)
+    }
+    output.value = sorted.join("")
+    let resorted = ""
+    for (let letter of sorted) {
+        resorted += letter + " " + responses[letter] + "\n"
+    }
+    responsesText.value = resorted
+    if (letterFlag.checked) output.hidden = false
+    review.style.display = "none"
+    responsesText.hidden = false
 }
 
 function onResponseClick(e) {
@@ -143,3 +165,4 @@ function onResponseClick(e) {
 
 responseA.addEventListener("click", onResponseClick)
 responseB.addEventListener("click", onResponseClick)
+done.addEventListener("click", finish)
