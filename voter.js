@@ -105,11 +105,9 @@ function resort() {
                 return aGb
             } else if (yourResponseLetters.includes(a)) {
                 comparisonCache.push(a + ">" + b)
-                progress.value = comparisonCache.length
                 return aGb
             } else if (yourResponseLetters.includes(b)) {
                 comparisonCache.push(b + ">" + a)
-                progress.value = comparisonCache.length
                 return bGa
             } else {
                 currentResponseA = a
@@ -136,6 +134,7 @@ function resort() {
             responses: responses
         }))
         addSavestate("autosave")
+        progress.value = comparisonCache.length
         responseA.innerText = responses[currentResponseA] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseA]) + ")") : "" )
         responseB.innerText = responses[currentResponseB] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseB]) + ")") : "" )
     }
