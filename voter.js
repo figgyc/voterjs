@@ -201,7 +201,7 @@ save.addEventListener("click", () => {
 load.addEventListener("click", () => {
     savestates.style.display = "block"
     explanation.style.display = "none"
-    responsesText.style.display = "none"
+    responsesText.hidden = true
     letterFlagBox.style.display = "none"
 
     let names = JSON.parse(localStorage.getItem("savestates"))
