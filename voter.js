@@ -67,6 +67,11 @@ let currentResponseA = ""
 let currentResponseB = ""
 
 go.addEventListener("click", e => {
+
+    if (JSON.parse(localStorage.getItem("savestates")).includes("autosave")) {
+        if (!prompt("This will overwrite your autosave. Continue?")) return
+    }
+
     // parse responses
     let responsesLines = responsesText.value.split("\n")
     responsesLines.filter(line => {return (line != "" && line != " ")})
@@ -154,6 +159,9 @@ function finish() {
     if (letterFlag.checked) output.hidden = false
     review.style.display = "none"
     responsesText.hidden = false
+
+    let names = JSON.parse(localStorage.getItem("savestates"))
+    localStorage.setItem("savestates", JSON.stringify(names.filter(item => item !== "autosave")))
 }
 
 function onResponseClick(e) {
