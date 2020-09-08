@@ -250,5 +250,5 @@ responseB.addEventListener("click", onResponseClick)
 done.addEventListener("click", finish)
 
 if (localStorage.getItem("savestates") == null) {
-    localStorage.setItem("savestates", [])
+    localStorage.setItem("savestates", "[]")
 }
