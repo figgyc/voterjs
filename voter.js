@@ -199,6 +199,7 @@ save.addEventListener("click", () => {
 })
 
 load.addEventListener("click", () => {
+
     savestates.style.display = "block"
     explanation.style.display = "none"
     responsesText.hidden = true
@@ -210,6 +211,9 @@ load.addEventListener("click", () => {
         let button = document.createElement("button")
         button.innerText = savestateName
         button.addEventListener("click", () => {
+            if (JSON.parse(localStorage.getItem("savestates")).includes("autosave") && savestateName != "autosave") {
+                if (!confirm("This will overwrite your autosave. Continue?")) return
+            }
             let savestate = JSON.parse(localStorage.getItem(savestateName))
             comparisonCache = savestate.comparisonCache
             responses = savestate.responses
