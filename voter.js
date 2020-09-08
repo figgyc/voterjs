@@ -69,7 +69,7 @@ let currentResponseB = ""
 go.addEventListener("click", e => {
 
     if (JSON.parse(localStorage.getItem("savestates")).includes("autosave")) {
-        if (!prompt("This will overwrite your autosave. Continue?")) return
+        if (!confirm("This will overwrite your autosave. Continue?")) return
     }
 
     // parse responses
