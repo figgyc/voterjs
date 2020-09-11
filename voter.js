@@ -159,6 +159,7 @@ function finish() {
     if (letterFlag.checked) output.hidden = false
     review.style.display = "none"
     responsesText.hidden = false
+    save.hidden = true
 
     let names = JSON.parse(localStorage.getItem("savestates"))
     localStorage.setItem("savestates", JSON.stringify(names.filter(item => item !== "autosave")))
