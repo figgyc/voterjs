@@ -193,7 +193,8 @@ save.addEventListener("click", () => {
     if (name != 'autosave' && name != "savestates" && name != null) {
         localStorage.setItem(name, JSON.stringify({
             comparisonCache: comparisonCache,
-            responses: responses
+            responses: responses,
+            yourResponseLetters: yourResponseLetters
         }))
         addSavestate(name)
     }
@@ -218,6 +219,7 @@ load.addEventListener("click", () => {
             let savestate = JSON.parse(localStorage.getItem(savestateName))
             comparisonCache = savestate.comparisonCache
             responses = savestate.responses
+            yourResponseLetters = savestate.yourResponseLetters
 
             progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
             responsesText.hidden = true
