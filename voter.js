@@ -219,7 +219,7 @@ load.addEventListener("click", () => {
             let savestate = JSON.parse(localStorage.getItem(savestateName))
             comparisonCache = savestate.comparisonCache
             responses = savestate.responses
-            if (savestate.includes("yourResponseLetters"))
+            if (savestate.yourResponseLetters != undefined)
                 yourResponseLetters = savestate.yourResponseLetters
 
             progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
