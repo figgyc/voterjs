@@ -52,6 +52,7 @@ let review = document.querySelector("#review")
 let reviewList = document.querySelector("#reviewList")
 let rank = document.querySelector("#rank")
 let save = document.querySelector("#save")
+let undo = document.querySelector("#undo")
 let load = document.querySelector("#load")
 let savestates = document.querySelector("#savestates")
 
@@ -132,6 +133,7 @@ function resort() {
         })
         responseA.hidden = true
         responseB.hidden = true
+        undo.hidden = true
         review.style.display = "block"
     } catch (e) {
         localStorage.setItem("autosave", JSON.stringify({
@@ -198,6 +200,11 @@ save.addEventListener("click", () => {
         }))
         addSavestate(name)
     }
+})
+
+undo.addEventListener("click", () => {
+    comparisonCache.pop()
+    resort()
 })
 
 load.addEventListener("click", () => {
