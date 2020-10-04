@@ -1,0 +1,78 @@
+html {
+    color: #ccc;
+    background: #050500;
+    font-family: Consolas, monospace !important;
+}
+input, button, textarea {
+    background: #101015;
+    color: #eee;
+    border: 1px solid white;
+    font-family: Consolas, monospace !important;
+    font-size: 12pt;
+}
+
+input, button {
+    min-height: 1.5em;
+}
+textarea {
+    resize: none;
+    height: 10em;
+}
+#responseA, #responseB, #yours, #progress, #output, textarea, #rank {
+    width: 100%;
+    max-width: 1200px;
+}
+
+#responseA, #responseB, progress {
+    display: block;
+}
+
+#responseA, #responseB {
+    height: 25%;
+    max-height: 4em;
+}
+
+progress[value]  {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid white;
+    height: 1.5em;
+    background-color:black;
+}
+
+progress::-webkit-progress-bar {
+    background: black;
+}
+
+progress::-moz-progress-bar, progress::-webkit-progress-value {
+    background-color: #dddd00
+}
+
+ul#reviewList {
+    list-style-image: url("selector.svg");
+}
+
+.splitBox {
+    display:flex;
+    flex-direction: row;
+}
+.splitBox div {
+    flex: 1 1 auto;
+}
+
+.left, .right {
+    width: 50%;
+}
+
+@media(max-width: 800px) {
+
+    .left, .right {
+        width: 100%;
+    }
+
+    .splitBox {
+        flex-direction: column;
+    }
+}
+

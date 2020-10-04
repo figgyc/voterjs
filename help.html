@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to use Voter.js</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <h1>How to use Voter.js</h1>
+    <a href="index.html">Go back</a>
+    <h2>Quick start for most TWOWs</h2>
+    <div class="splitBox">
+        <div class="left">
+            <ol>
+                <li>Open the Google Sheet (or similar) for the voter screen of what TWOW you want to vote on. <br><small>- If you don't have a Google Sheet, create a list of responses in a text editor, one line per response, with letters separated from responses with tabs or one space.</small></li>
+                <li>Copy the letters and responses (not word counts) by selecting them all and pressing Ctrl-C (Cmd-C on Macs; on mobile, hold down and press Copy)</li>
+                <li>Open Voter.js and paste into the big box.</li>
+                <li>If the screen you are voting on contains your response(s), then write those letters into the box.</li>
+                <li>Press Go.</li>
+                <li>Vote! The voting screen is fairly self explanatory, just keep clicking the best responses until you reach the end. For details, see below.</li>
+                <li>Before the end, you have an opportunity to rearrange any responses which you may have voted up or down by accident.</li>
+                <li>Copy the voting string from the textbox at the bottom and DM it to your host with the keyword!</li>
+            </ol>
+        </div>
+        <div class="right">
+            <video src="animation.mp4" autoplay controls playsinline muted style="width: 100%"></video>
+        </div>
+    </div>
+
+    <h2>What is this?</h2>
+    <p>
+        Voter.js is a web tool made by me (figgyc#0168 on Discord) that is designed to help you conveniently and accurately rank lines of text from best to worst. The main purpose is
+        for online competitions known as <a href="https://discord.gg/ZWPvFRv">miniTWOWs</a>, in which the goal is to create the best ten-word sentence responding to a given prompt, 
+        which you probably knew already. Many of these rounds can contain hundreds of responses and it is a nightmare to manually rate and compare thousands of times by hand, however
+        it is beneficial to do so (supervote) to improve the accuracy of results. Therefore automated tools, like Voter.js and voter.exe before it, were created to sort a list of responses
+        based on simple 1v1 comparisons.
+    </p>
+
+    <h2>What do all the buttons do?</h2>
+    <ul>
+        <li><strong>Your response letters:</strong> Usually in a TWOW, you vote on a list containing your own response, so typing those letters here results in the program automatically ranking those above all the others. If TWOW mode is disabled, use line numbers here instead of letters. If you have more than one response (eg DRPs), separate them with commas. The order in which you type them is not considered; if you care, rearrange them at the end.</li>
+        <li><strong>TWOW mode:</strong> disabling this allows you to rank any list, even if it does not have a letter-response mapping. You could use Voter.js to order anything, such as a tier list!</li>
+        <li><strong>Show word count:</strong> Of course for TWOWs it is important to know if a response is 10 words, so a rudimentary word count is provided. No algorithm is perfect: always double check before you downvote.</li>
+        <li><strong>Smart colors:</strong> Rereading responses over and over can be cumbersome, so it can be useful to know at a glance how much you like or dislike a response. Smart colours is similar to voter.exe, in that good responses are in green, bad responses are in red, and middling responses are in yellow.</li>
+        <li><strong>Save and load:</strong> Voting can take a while so if you want you can save your progress, close the page and return later. An autosave is made for you, or if you want to vote on multiple TWOWs at once then you can set a name to save multiple. Use the Load savestate button on the main page to get back to where you were.</li>
+        <li><strong>Undo:</strong> This simply forgets the last comparison you made, useful if you make a mistake.</li>
+        <li><strong>Finish now:</strong> If a vote is taking too long and you're nearing a deadline, this button will create an <i>approximate</i> finished vote based on your voting so far. <strong>Always review the list in detail when you do this!</strong> Depending on how early you invoke this, it can lead to wildly inaccurate votes. Use with caution.</li>
+    </ul>
+</body>
+</html>

@@ -8,7 +8,8 @@
 // creds to "OK sure", this function is under cc by-sa 4
 function countWords(str) {
     return str
-      .replace(/[!.,:;?]+/, " ")
+      .replace(/[!.,:;?]+/g, " ")
+      .replace(/[\W]+/g, "")
       //.replace(/[]/, " ")
       .split(' ')
       .filter(function(n) { return n != '' })
@@ -40,6 +41,7 @@ let responsesText = document.querySelector("#responses")
 let yourResponse = document.querySelector("#yours")
 let go = document.querySelector("#go")
 let done = document.querySelector("#done")
+let finishBtn = document.querySelector("#finish")
 let responseA = document.querySelector("#responseA")
 let responseB = document.querySelector("#responseB")
 let output = document.querySelector("#output")
@@ -55,6 +57,7 @@ let save = document.querySelector("#save")
 let undo = document.querySelector("#undo")
 let load = document.querySelector("#load")
 let savestates = document.querySelector("#savestates")
+let smartColors = document.querySelector("#smartColors")
 
 let responses = {
 
@@ -66,6 +69,36 @@ const bGa = 1
 let yourResponseLetters = []
 let currentResponseA = ""
 let currentResponseB = ""
+
+function getScore(letter) {
+    let score = 0
+    let max = 0
+    for (let comp of comparisonCache) {
+        if (comp.charAt(0) == letter) {
+            score++
+        }
+        if (comp.includes(letter)) {
+            max++
+        }
+    }
+    if (max == 0) return 0.5
+    return score/max
+}
+
+function gradient(score) {
+    /* 
+        doing a gradient from green to yellow to red with simple math:
+        start at green: 00ff00
+        increase red until we get to yellow at 50%: ffff00
+        decrease green for the last 50%: ff0000
+    */
+    let percentageGreen = Math.max(1, -2*(score) +1)
+    let percentageRed = Math.min(1, 2*(score))
+    let hexGreen = Math.round(percentageGreen*255).toString(16).padStart(2, "0")
+    let hexRed = Math.round(percentageRed*255).toString(16).padStart(2, "0")
+    console.log( percentageGreen, percentageRed, hexGreen, hexRed)
+    return "#" + hexGreen + hexRed + "00"
+}
 
 go.addEventListener("click", e => {
 
@@ -122,19 +155,7 @@ function resort() {
             }
         })
         // done sorting
-        for (let letter of sorted) {
-            let element = document.createElement("li")
-            element.responseCode = letter
-            element.innerText = responses[letter]
-            reviewList.appendChild(element)
-        }
-        Sortable.create(reviewList, {
-            animation: 150,
-        })
-        responseA.hidden = true
-        responseB.hidden = true
-        undo.hidden = true
-        review.style.display = "block"
+        reviewNow()
     } catch (e) {
         localStorage.setItem("autosave", JSON.stringify({
             comparisonCache: comparisonCache,
@@ -144,7 +165,38 @@ function resort() {
         progress.value = comparisonCache.length
         responseA.innerText = responses[currentResponseA] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseA]) + ")") : "" )
         responseB.innerText = responses[currentResponseB] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseB]) + ")") : "" )
+        if (smartColors.checked) {
+            responseA.style.borderColor = gradient(getScore(currentResponseA))
+            responseA.style.color = gradient(getScore(currentResponseA))
+            responseB.style.borderColor = gradient(getScore(currentResponseB))
+            responseB.style.color = gradient(getScore(currentResponseB))
+        }
     }
+}
+
+function reviewNow() {
+    let sorted = Object.keys(responses).slice().sort((a, b) => {
+        if (yourResponseLetters.includes(a)) return aGb
+        if (yourResponseLetters.includes(b)) return bGa
+        if (getScore(a) > getScore(b)) {
+            return aGb
+        }
+        return bGa
+    })
+    for (let letter of sorted) {
+        let element = document.createElement("li")
+        element.responseCode = letter
+        element.innerText = responses[letter]
+        reviewList.appendChild(element)
+    }
+    Sortable.create(reviewList, {
+        animation: 150,
+    })
+    responseA.style.display = "none"
+    responseB.style.display = "none"
+    undo.style.display = "none"
+    finishBtn.style.display = "none"
+    review.style.display = "block"
 }
 
 function finish() {
@@ -157,6 +209,7 @@ function finish() {
     for (let letter of sorted) {
         resorted += letter + " " + responses[letter] + "\n"
     }
+    resorted = resorted.substring(0, resorted.length - 1) // remove trailing newline
     responsesText.value = resorted
     if (letterFlag.checked) output.hidden = false
     review.style.display = "none"
@@ -203,8 +256,21 @@ save.addEventListener("click", () => {
 })
 
 undo.addEventListener("click", () => {
-    comparisonCache.pop()
+    let notSelf = false
+    do {
+        notSelf = false
+        let popped = comparisonCache.pop()
+        for (let letter of yourResponseLetters) {
+            if (popped.includes(letter)) {
+                notSelf = true // if its an auto genned cache, do another
+            }
+        }
+    } while (notSelf)
     resort()
+})
+
+finishBtn.addEventListener("click", () => {
+    if (confirm("Finishing early may reduce the accuracy of your vote severely. Make sure to use the review section carefully! Are you sure?")) reviewNow()
 })
 
 load.addEventListener("click", () => {
