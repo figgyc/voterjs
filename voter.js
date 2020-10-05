@@ -91,12 +91,12 @@ function gradient(score) {
         increase red until we get to yellow at 50%: ffff00
         decrease green for the last 50%: ff0000
     */
-    let percentageGreen = Math.max(1, -2*(score) +1)
-    let percentageRed = Math.min(1, 2*(score))
+    let percentageGreen = Math.min(1, 2*(score))
+    let percentageRed = Math.min(1, Math.max(0, -2*(score) +2))
     let hexGreen = Math.round(percentageGreen*255).toString(16).padStart(2, "0")
     let hexRed = Math.round(percentageRed*255).toString(16).padStart(2, "0")
     console.log( percentageGreen, percentageRed, hexGreen, hexRed)
-    return "#" + hexGreen + hexRed + "00"
+    return "#" + hexRed + hexGreen + "00"
 }
 
 go.addEventListener("click", e => {
