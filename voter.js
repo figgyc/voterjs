@@ -120,6 +120,7 @@ go.addEventListener("click", e => {
         i++
     }
     yourResponseLetters = yourResponse.value.replace(" ", "").split(",")
+    if (yourResponseLetters = [""]) yourResponseLetters = []
 
     // prep ui
     progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
