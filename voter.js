@@ -7,13 +7,12 @@
 // https://stackoverflow.com/a/40385425/2758631
 // creds to "OK sure", this function is under cc by-sa 4
 function countWords(str) {
-    return str
-      .replace(/[!.,:;?]+/g, " ")
-      .replace(/[\W]+/g, "")
+    str = str.replace(/[!.,:;?]+/g, " ")
+    str = str.replace(/[^\d\w\s]+/g, "")
       //.replace(/[]/, " ")
-      .split(' ')
-      .filter(function(n) { return n != '' })
-      .length;
+    str = str.split(' ')
+    str = str.filter(function(n) { return n != '' })
+    return str.length
  }
 
 function twowSplit(str) {
