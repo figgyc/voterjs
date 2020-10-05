@@ -95,7 +95,6 @@ function gradient(score) {
     let percentageRed = Math.min(1, Math.max(0, -2*(score) +2))
     let hexGreen = Math.round(percentageGreen*255).toString(16).padStart(2, "0")
     let hexRed = Math.round(percentageRed*255).toString(16).padStart(2, "0")
-    console.log( percentageGreen, percentageRed, hexGreen, hexRed)
     return "#" + hexRed + hexGreen + "00"
 }
 
