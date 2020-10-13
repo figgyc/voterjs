@@ -154,7 +154,7 @@ function resort() {
             }
         })
         // done sorting
-        reviewNow()
+        reviewNow(sorted)
     } catch (e) {
         localStorage.setItem("autosave", JSON.stringify({
             comparisonCache: comparisonCache,
@@ -174,14 +174,7 @@ function resort() {
 }
 
 function reviewNow() {
-    let sorted = Object.keys(responses).slice().sort((a, b) => {
-        if (yourResponseLetters.includes(a)) return aGb
-        if (yourResponseLetters.includes(b)) return bGa
-        if (getScore(a) > getScore(b)) {
-            return aGb
-        }
-        return bGa
-    })
+    
     for (let letter of sorted) {
         let element = document.createElement("li")
         element.responseCode = letter
@@ -269,7 +262,15 @@ undo.addEventListener("click", () => {
 })
 
 finishBtn.addEventListener("click", () => {
-    if (confirm("Finishing early may reduce the accuracy of your vote severely. Make sure to use the review section carefully! Are you sure?")) reviewNow()
+    let sorted = Object.keys(responses).slice().sort((a, b) => {
+        if (yourResponseLetters.includes(a)) return aGb
+        if (yourResponseLetters.includes(b)) return bGa
+        if (getScore(a) > getScore(b)) {
+            return aGb
+        }
+        return bGa
+    })
+    if (confirm("Finishing early may reduce the accuracy of your vote severely. Make sure to use the review section carefully! Are you sure?")) reviewNow(sorted)
 })
 
 load.addEventListener("click", () => {
