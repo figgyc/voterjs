@@ -173,7 +173,7 @@ function resort() {
     }
 }
 
-function reviewNow() {
+function reviewNow(sorted) {
     
     for (let letter of sorted) {
         let element = document.createElement("li")
