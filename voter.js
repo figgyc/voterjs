@@ -120,7 +120,9 @@ go.addEventListener("click", e => {
         i++
     }
     yourResponseLetters = yourResponse.value.replace(" ", "").split(",")
+    console.log(yourResponse.value, yourResponseLetters)
     if (yourResponseLetters == [""]) yourResponseLetters = []
+    console.log(yourResponseLetters)
 
     // prep ui
     progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
@@ -136,29 +138,14 @@ go.addEventListener("click", e => {
 
 function resort() {
     try {
-        let sorted = Object.keys(responses).slice().sort((a, b) => { // sort not in place
-            if (comparisonCache.includes(b + ">" + a)) {
-                return bGa
-            } else if (comparisonCache.includes(a + ">" + b)) {
-                return aGb
-            } else if (yourResponseLetters.includes(a)) {
-                comparisonCache.push(a + ">" + b)
-                return aGb
-            } else if (yourResponseLetters.includes(b)) {
-                comparisonCache.push(b + ">" + a)
-                return bGa
-            } else {
-                currentResponseA = a
-                currentResponseB = b
-                throw "Unknown comparison"
-            }
-        })
+        let sorted = Object.keys(responses).slice().sort(Sorter(true))
         // done sorting
         reviewNow(sorted)
     } catch (e) {
         localStorage.setItem("autosave", JSON.stringify({
             comparisonCache: comparisonCache,
-            responses: responses
+            responses: responses,
+            yourResponseLetters: yourResponseLetters
         }))
         addSavestate("autosave")
         progress.value = comparisonCache.length
@@ -189,6 +176,34 @@ function reviewNow(sorted) {
     undo.style.display = "none"
     finishBtn.style.display = "none"
     review.style.display = "block"
+}
+
+function Sorter(shouldThrow) {
+    return (a, b) => {
+        if (comparisonCache.includes(b + ">" + a)) {
+            return bGa
+        } else if (comparisonCache.includes(a + ">" + b)) {
+            return aGb
+        } else if (yourResponseLetters.includes(a)) {
+            comparisonCache.push(a + ">" + b)
+            return aGb
+        } else if (yourResponseLetters.includes(b)) {
+            comparisonCache.push(b + ">" + a)
+            return bGa
+        } else {
+            if (shouldThrow) {
+                console.log(a, b)
+                currentResponseA = a
+                currentResponseB = b
+                throw "Unknown comparison"
+            } else {
+                if (getScore(a) > getScore(b)) {
+                    return aGb
+                }
+                return bGa
+            }
+        }
+    }
 }
 
 function finish() {
@@ -262,14 +277,7 @@ undo.addEventListener("click", () => {
 })
 
 finishBtn.addEventListener("click", () => {
-    let sorted = Object.keys(responses).slice().sort((a, b) => {
-        if (yourResponseLetters.includes(a)) return aGb
-        if (yourResponseLetters.includes(b)) return bGa
-        if (getScore(a) > getScore(b)) {
-            return aGb
-        }
-        return bGa
-    })
+    let sorted = Object.keys(responses).slice().sort(Sorter(false))
     if (confirm("Finishing early may reduce the accuracy of your vote severely. Make sure to use the review section carefully! Are you sure?")) reviewNow(sorted)
 })
 
