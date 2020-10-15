@@ -268,7 +268,7 @@ undo.addEventListener("click", () => {
         notSelf = false
         let popped = comparisonCache.pop()
         for (let letter of yourResponseLetters) {
-            if (popped.includes(letter)) {
+            if (popped.includes(letter) && letter != "") {
                 notSelf = true // if its an auto genned cache, do another
             }
         }
