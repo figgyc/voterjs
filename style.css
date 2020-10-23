@@ -3,7 +3,7 @@ html {
     background: #050500;
     font-family: Consolas, monospace !important;
 }
-input, button, textarea {
+input, button, textarea, select {
     background: #101015;
     color: #eee;
     border: 1px solid white;
@@ -18,7 +18,7 @@ textarea {
     resize: none;
     height: 10em;
 }
-#responseA, #responseB, #yours, #progress, #output, textarea, #rank {
+#responseA, #responseB, #yours, #progress, #output, textarea, #rank, .tiersetFlex {
     width: 100%;
     max-width: 1200px;
 }
@@ -49,7 +49,7 @@ progress::-moz-progress-bar, progress::-webkit-progress-value {
     background-color: #dddd00
 }
 
-ul#reviewList {
+ul#reviewList, ul.tier {
     list-style-image: url("selector.svg");
 }
 
@@ -63,6 +63,29 @@ ul#reviewList {
 
 .left, .right {
     width: 50%;
+    margin: 2px;
+}
+
+.tiersetFlex {
+    display: flex;
+    flex-direction: row;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+}
+
+ul.tier {
+    min-height: 2em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+select {
+    appearance: none;
+}
+
+#customTierset {
+    flex-grow: 1;
+    min-width: 400px;
 }
 
 @media(max-width: 800px) {

@@ -20,9 +20,6 @@ function twowSplit(str) {
     return splitOnce(str, " ")
 }
 
-function permutations(n) {
-    return n* Math.log2(n) // avg for quicksort, should be accurate enough
-}
 
 // https://stackoverflow.com/a/2878726/2758631
 // creds to Nick Craver, this function is under cc by-sa 4
@@ -36,6 +33,34 @@ let comparisonCache = [
     // yes its inefficent but idc
 ]
 
+let tier = {
+    // eg "A": 9 where higher numbers = better tiers
+}
+
+let tierULs = {}
+
+const tierSets = 
+{
+  none: [ 'Default' ],
+  numbers: [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10' ],
+  numbersPoint5: [ '0', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10' ],
+  letters: [ 'F', 'E', 'D', 'C', 'B', 'A' ],
+  lettersS: [ 'F', 'E', 'D', 'C', 'B', 'A', 'S' ],
+  lettersDeltas: [ 'D-', 'D', 'D+', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A', 'A+' ],
+  lettersDeltasS: [ 'D-', 'D', 'D+', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A', 'A+', 'S-', 'S', 'S+' ],
+}
+
+let tierSet = tierSets['none']
+
+// UI stuff
+let outputBox = document.querySelector("#outputBox")
+let rank = document.querySelector("#rank")
+let savestates = document.querySelector("#savestates")
+let intro = document.querySelector("#intro")
+let tierlist = document.querySelector("#tierlist")
+let review = document.querySelector("#review")
+
+// DOM stuff
 let responsesText = document.querySelector("#responses")
 let yourResponse = document.querySelector("#yours")
 let go = document.querySelector("#go")
@@ -46,17 +71,20 @@ let responseB = document.querySelector("#responseB")
 let output = document.querySelector("#output")
 let letterFlag = document.querySelector("#letter")
 let wordCount = document.querySelector("#wordcount")
-let letterFlagBox = document.querySelector("#letterFlagBox")
 let progress = document.querySelector("#progress")
 let explanation = document.querySelector("#explanation")
-let review = document.querySelector("#review")
 let reviewList = document.querySelector("#reviewList")
-let rank = document.querySelector("#rank")
 let save = document.querySelector("#save")
 let undo = document.querySelector("#undo")
 let load = document.querySelector("#load")
-let savestates = document.querySelector("#savestates")
 let smartColors = document.querySelector("#smartColors")
+let jsSort = document.querySelector("#jsSort")
+let picktierset = document.querySelector("#picktierset")
+let responsesOut = document.querySelector("#responsesOut")
+let sortButton = document.querySelector("#sort")
+let leftBox = document.querySelector("#leftBox")
+let tiers = document.querySelector("#tiers")
+let customTierset = document.querySelector("#customTierset")
 
 let responses = {
 
@@ -69,7 +97,47 @@ let yourResponseLetters = []
 let currentResponseA = ""
 let currentResponseB = ""
 
+function nativeSort(list, comparator) {
+    return list.sort(comparator)
+}
+
+function nativePermutations(n) {
+    return n* Math.log2(n) // avg for quicksort, should be accurate enough
+}
+
+function mergeSort(list, comparator) {
+    let splitA = []
+    let splitB = []
+    if (list.length > 1) {
+        splitA = mergeSort(list.slice(0, Math.floor(list.length/2)),comparator)
+        splitB = mergeSort(list.slice(Math.floor(list.length/2)),comparator)
+    }
+    if( list.length <= 1 ) return list
+    let mergedList = []
+    while (splitA.length > 0 && splitB.length > 0) {
+        a = splitA[0]
+        b = splitB[0]
+        if (comparator(a, b) == aGb) {
+            mergedList.push(a)
+            splitA = splitA.slice(1) // remove the first element from each list
+        } else { // bGa
+            mergedList.push(b)
+            splitB = splitB.slice(1)
+        }
+    }
+    for (let item of splitA) mergedList.push(item) // push what is left
+    for (let item of splitB) mergedList.push(item)
+    return mergedList
+}
+
+let mergePermutations = nativePermutations // i think these are the same?
+
+let sortFunction = mergeSort
+let permutations = mergePermutations
+
 function getScore(letter) {
+    // this is a method to get the approximate level of quality of a response
+    // by measuring how many comparisons it has won
     let score = 0
     let max = 0
     for (let comp of comparisonCache) {
@@ -124,29 +192,104 @@ go.addEventListener("click", e => {
     if (yourResponseLetters == [""]) yourResponseLetters = []
     console.log(yourResponseLetters)
 
+    // configure sorter
+    if (jsSort.checked) {
+        sortFunction = nativeSort
+        permutations = nativePermutations
+    }
+
+
     // prep ui
     progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
-    responsesText.hidden = true
-    rank.style.display = "block"
-    letterFlagBox.style.display = "none"
-    explanation.style.display = "none"
-    responseA.hidden = false
-    responseB.hidden = false
+    updateUI("tierlist")
 
-    resort()
+    doTierlists()
+})
+
+function doTierlists() {
+    if (picktierset.value != "custom") {
+        tierSet = tierSets[picktierset.value]
+    } else {
+        tierSet = customTierset.value.split(",").trim()
+    }
+    if (tierSet.length == 1) {
+        for (const letter of Object.keys(responses)) {
+            tier[letter] = 0
+        }
+        updateUI("rank")
+        resort()
+    } else {
+        
+
+        unsortedList = createTier(-1)
+        tierULs[-1] = unsortedList
+
+        for (let i = tierSet.length; i--; i>=-1) {
+            tierULs[i] = createTier(i)
+        }
+
+        // tier -1 or the unsorted tier comes first
+        for (let letter of Object.keys(responses)) {
+            let element = document.createElement("li")
+            element.responseCode = letter
+            element.innerText = responses[letter]
+            if (yourResponseLetters.includes(letter)) {
+                tierULs[tierSet.length-1].appendChild(element)
+            } else {
+                unsortedList.appendChild(element)
+            }
+        }
+
+        sortButton.addEventListener("click", () => {
+            for (let tierCode of Object.keys(tierULs)) {
+                for (let responseElement of tierULs[tierCode].children) {
+                    console.log(responseElement, responseElement.responseCode)
+                    tier[responseElement.responseCode] = tierCode
+                }
+            }
+            updateUI("rank")
+            resort()
+        })
+    }
+}
+
+function createTier(i) {
+    let header = document.createElement("p")
+    header.innerText = i == -1 ? "Unsorted": tierSet[i]
+    header.style.color = tierColor(i)
+    let list = document.createElement("ul")
+    list.className = "tier"
+    list.style.border = "1px solid white"
+    list.style.borderColor = tierColor(i)
+    Sortable.create(list, {
+        animation: 150,
+        group: "tierlisting"
+    })
+    if (i == -1) {
+        leftBox.appendChild(header)
+        leftBox.appendChild(list)
+    } else {
+        tiers.appendChild(header)
+        tiers.appendChild(list)
+    }
+    return list
+}
+
+function tierColor(c) {
+    if (c == -1) return "#ffffff"
+    return gradient(c/(tierSet.length-1))
+}
+
+picktierset.addEventListener("change", e => {
+    customTierset.hidden = (e.target.value != "custom")
 })
 
 function resort() {
     try {
-        let sorted = Object.keys(responses).slice().sort(Sorter(true))
+        let sorted = sortFunction(Object.keys(responses).slice(), Sorter(true))
         // done sorting
         reviewNow(sorted)
     } catch (e) {
-        localStorage.setItem("autosave", JSON.stringify({
-            comparisonCache: comparisonCache,
-            responses: responses,
-            yourResponseLetters: yourResponseLetters
-        }))
         addSavestate("autosave")
         progress.value = comparisonCache.length
         responseA.innerText = responses[currentResponseA] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseA]) + ")") : "" )
@@ -171,23 +314,26 @@ function reviewNow(sorted) {
     Sortable.create(reviewList, {
         animation: 150,
     })
-    responseA.style.display = "none"
-    responseB.style.display = "none"
-    undo.style.display = "none"
-    finishBtn.style.display = "none"
-    review.style.display = "block"
+    updateUI("review")
 }
 
 function Sorter(shouldThrow) {
     return (a, b) => {
-        if (comparisonCache.includes(b + ">" + a)) {
-            return bGa
-        } else if (comparisonCache.includes(a + ">" + b)) {
+        
+        if (comparisonCache.includes(a + ">" + b)) {
             return aGb
+        } else if (comparisonCache.includes(b + ">" + a)) {
+            return bGa
         } else if (yourResponseLetters.includes(a)) {
             comparisonCache.push(a + ">" + b)
             return aGb
         } else if (yourResponseLetters.includes(b)) {
+            comparisonCache.push(b + ">" + a)
+            return bGa
+        } else if (tier[a] > tier[b] && tier[b] != -1) {
+            comparisonCache.push(a + ">" + b)
+            return aGb
+        } else if (tier[b] > tier[a] && tier[a] != -1) {
             comparisonCache.push(b + ">" + a)
             return bGa
         } else {
@@ -217,11 +363,9 @@ function finish() {
         resorted += letter + " " + responses[letter] + "\n"
     }
     resorted = resorted.substring(0, resorted.length - 1) // remove trailing newline
-    responsesText.value = resorted
+    responsesOut.value = resorted
     if (letterFlag.checked) output.hidden = false
-    review.style.display = "none"
-    responsesText.hidden = false
-    save.hidden = true
+    updateUI("output")
 
     let names = JSON.parse(localStorage.getItem("savestates"))
     localStorage.setItem("savestates", JSON.stringify(names.filter(item => item !== "autosave")))
@@ -239,7 +383,36 @@ function onResponseClick(e) {
     resort()
 }
 
+responseA.addEventListener("click", onResponseClick)
+responseB.addEventListener("click", onResponseClick)
+
+document.addEventListener("keydown", e => {
+    // if we be ranking
+    if (rank.style.display == "block") {
+        switch(e.code) {
+            case "Digit1":
+                e.preventDefault()
+                onResponseClick({target:{id:"responseA"}})
+            case "Digit2":
+                e.preventDefault()
+                onResponseClick({target:{id:"responseB"}})
+            default:
+                return // do nothing
+        }
+    }
+})
+
+done.addEventListener("click", finish)
+
+customTierset.hidden = (picktierset.value != "custom")
+
 function addSavestate(name) {
+    localStorage.setItem(name, JSON.stringify({
+        comparisonCache: comparisonCache,
+        responses: responses,
+        yourResponseLetters: yourResponseLetters,
+        tier: tier
+    }))
     let names = JSON.parse(localStorage.getItem("savestates"))
     if (names == null) {
         names = []
@@ -250,14 +423,29 @@ function addSavestate(name) {
     }
 }
 
+finishBtn.addEventListener("click", () => {
+    let sorted = Object.keys(responses).slice().sort(Sorter(false))
+    if (confirm("Finishing early may reduce the accuracy of your vote severely. Make sure to use the review section carefully! Are you sure?")) reviewNow(sorted)
+})
+
+function blockNone(bool) {
+    return bool ? "block" : "none"
+}
+
+function updateUI(state) {
+    intro.style.display = blockNone(state == "intro")
+    savestates.style.display = blockNone(state == "load")
+    tierlist.style.display = blockNone(state == "tierlist")
+    rank.style.display = blockNone(state == "rank")
+    review.style.display = blockNone(state == "review")
+    outputBox.style.display = blockNone(state == "output")
+}
+
+/* Save/load system */
+
 save.addEventListener("click", () => {
     let name = prompt("Pick a unique name for your savestate. (don't pick 'autosave' or 'savestates')")
     if (name != 'autosave' && name != "savestates" && name != null) {
-        localStorage.setItem(name, JSON.stringify({
-            comparisonCache: comparisonCache,
-            responses: responses,
-            yourResponseLetters: yourResponseLetters
-        }))
         addSavestate(name)
     }
 })
@@ -276,17 +464,11 @@ undo.addEventListener("click", () => {
     resort()
 })
 
-finishBtn.addEventListener("click", () => {
-    let sorted = Object.keys(responses).slice().sort(Sorter(false))
-    if (confirm("Finishing early may reduce the accuracy of your vote severely. Make sure to use the review section carefully! Are you sure?")) reviewNow(sorted)
-})
+
 
 load.addEventListener("click", () => {
 
-    savestates.style.display = "block"
-    explanation.style.display = "none"
-    responsesText.hidden = true
-    letterFlagBox.style.display = "none"
+    updateUI("load")
 
     let names = JSON.parse(localStorage.getItem("savestates"))
     for (let savestateName of names) {
@@ -302,15 +484,16 @@ load.addEventListener("click", () => {
             responses = savestate.responses
             if (savestate.yourResponseLetters != undefined)
                 yourResponseLetters = savestate.yourResponseLetters
+            if (savestate.tier != undefined) {
+                tier = savestate.tier
+            } else {
+                for (const letter of Object.keys(responses)) {
+                    tier[letter] = 0
+                }
+            }
 
             progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
-            responsesText.hidden = true
-            rank.style.display = "block"
-            letterFlagBox.style.display = "none"
-            explanation.style.display = "none"
-            savestates.style.display = "none"
-            responseA.hidden = false
-            responseB.hidden = false
+            updateUI("rank")
 
             resort()
         })
@@ -330,9 +513,6 @@ load.addEventListener("click", () => {
 })
 
 
-responseA.addEventListener("click", onResponseClick)
-responseB.addEventListener("click", onResponseClick)
-done.addEventListener("click", finish)
 
 if (localStorage.getItem("savestates") == null) {
     localStorage.setItem("savestates", "[]")

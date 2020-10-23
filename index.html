@@ -6,22 +6,48 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h2>figgyc's Voter.js</h2>
-    <div id="explanation">
-        <small>additional thanks to <a href="https://stackoverflow.com/a/2878726/2758631">these</a> <a href="https://stackoverflow.com/a/40385425/2758631">two</a> whose code i took from stack overflow (cc-by sa 4), check out the <a href="https://github.com/figgyc/voterjs">source code</a>, also shoutout to 96 LB for the original voter.exe idea. send ideas/bugs to figgyc#0168 on Discord </small> <br />
-        <strong>New! <a href="help.html">View the tutorial</a>, it even has a mini video</strong>
-    </div>
-    <textarea placeholder="Responses (one per line)" id="responses"></textarea> <br>
-    <span id="letterFlagBox">
+    <h2>figgyc's Voter.js <small style="font-size: 8pt">now with better sorting, keyboard shortcuts (try 1 and 2) and rating/tierlists!</small></h2>
+    
+    <span id="intro">
+        <div id="explanation">
+            <small>additional thanks to <a href="https://stackoverflow.com/a/2878726/2758631">these</a> <a href="https://stackoverflow.com/a/40385425/2758631">two</a> whose code i took from stack overflow (cc-by sa 4), check out the <a href="https://github.com/figgyc/voterjs">source code</a>, also shoutout to 96 LB for the original voter.exe idea. send ideas/bugs to figgyc#0168 on Discord </small> <br />
+            <u>I have implemented quite significant changes to the voter.js backend, please verify your votes and if you notice anything off DM figgyc#0168 as soon as you notice. Thanks.</u> <br />
+            <strong><a href="help.html">View the tutorial</a>, it even has a mini video</strong>
+        </div>
+        <textarea placeholder="Responses (one per line)" id="responses"></textarea> <br>
         <input id="yours" type="text" placeholder="Your response letter/line number(s) (optional, seperate with commas)" /><br>
+        <div class="tiersetFlex">
+            <select name="picktierset" id="picktierset" value="none">
+                <option value="none">Off</option>
+                <option value="numbers">Numbers (0, 1, to 10)</option>
+                <option value="numbersPoint5">Numbers including .5s (0, 0.5 to 10)</option>
+                <option value="letters">Letters A to F</option>
+                <option value="lettersS">Letters S to F</option>
+                <option value="lettersDeltas">Grades A+ to D-</option>
+                <option value="lettersDeltasS">Grades S+ to D-</option>
+                <option value="custom">Custom</option>
+            </select> <label for="picktierset"> Enable tier listing/ranking </label>
+            <input type="text" id="customTierset" placeholder="Separate with commas, highest to lowest" hidden/>
+        </div>
         <input type="checkbox" id="letter" name="letter" checked /> <label for="letter">TWOW mode (Responses are input with letters at the start)</label> <br>
         <input type="checkbox" id="wordcount" name="wordcount" checked /> <label for="wordcount">Show word count (may not always be 100% right, always double check)</label><br>
         <input type="checkbox" id="smartColors" name="smartColors" checked /> <label for="smartColors">Smart colors (based on previous voting, better responses are more green)</label><br>
+        <input type="checkbox" id="jsSort" name="jsSort" /> <label for="jsSort">Use legacy sorting algorithm (not recommended)</label><br>
         <button id="go">Go</button> <button id="load">Load savestate</button> <br> <br>
     </span>
 
     <ul id="savestates" style="display: none">
     </ul>
+
+    <div id="tierlist" style="display:none">
+        <h2>Rate responses</h2>
+        <div class="splitBox">
+            <div id="leftBox" class="left"></div>
+            <div id="tiers" class="right"></div>
+        </div>
+
+        <button id="sort">Start comparing</button>
+    </div>
 
     <div id="rank" style="display: none">
         <progress id="progress" value="0"></progress>
@@ -39,7 +65,10 @@
         <button id="done">Done</button>
     </div>
 
-    <input type="text" id="output" hidden readonly />
+    <div id="outputBox" style="display: none">
+        <textarea readonly id="responsesOut"></textarea> <br>
+        <input type="text" id="output" hidden readonly />
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" async></script>
     <script src="voter.js" async defer></script>
 </body>
