@@ -514,7 +514,7 @@ load.addEventListener("click", () => {
                 }
             }
 
-            if (savestate.formatVersion == undefined || savestate.formatVersion <= 2) {
+            if (savestate.formatVersion == undefined || savestate.formatVersion < 2) {
                 // filter comparisons not done manually by the user, to fix the progress bar when migrating version
                 let comparisonCacheTemp = comparisonCache
                 comparisonCache = []
