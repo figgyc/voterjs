@@ -9,11 +9,11 @@
 function countWords(str) {
     str = str.replace(/[!.,:;?]+/g, " ")
     str = str.replace(/[^\d\w\s]+/g, "")
-      //.replace(/[]/, " ")
+    //.replace(/[]/, " ")
     str = str.split(' ')
-    str = str.filter(function(n) { return n != '' })
+    str = str.filter(function (n) { return n != '' })
     return str.length
- }
+}
 
 function twowSplit(str) {
     if (str.includes("\t")) return splitOnce(str, /\t+/)
@@ -41,15 +41,17 @@ let tier = {
 
 let tierULs = {}
 
-const tierSets = 
+let formatVersion = 2 // v2: don't cache auto guesses
+
+const tierSets =
 {
-  none: [ 'Default' ],
-  numbers: [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10' ],
-  numbersPoint5: [ '0', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10' ],
-  letters: [ 'F', 'E', 'D', 'C', 'B', 'A' ],
-  lettersS: [ 'F', 'E', 'D', 'C', 'B', 'A', 'S' ],
-  lettersDeltas: [ 'D-', 'D', 'D+', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A', 'A+' ],
-  lettersDeltasS: [ 'D-', 'D', 'D+', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A', 'A+', 'S-', 'S', 'S+' ],
+    none: ['Default'],
+    numbers: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+    numbersPoint5: ['0', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10'],
+    letters: ['F', 'E', 'D', 'C', 'B', 'A'],
+    lettersS: ['F', 'E', 'D', 'C', 'B', 'A', 'S'],
+    lettersDeltas: ['D-', 'D', 'D+', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A', 'A+'],
+    lettersDeltasS: ['D-', 'D', 'D+', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A', 'A+', 'S-', 'S', 'S+'],
 }
 
 let tierSet = tierSets['none']
@@ -87,6 +89,7 @@ let sortButton = document.querySelector("#sort")
 let leftBox = document.querySelector("#leftBox")
 let tiers = document.querySelector("#tiers")
 let customTierset = document.querySelector("#customTierset")
+let numIterations = document.querySelector("#numIterations")
 
 let responses = {
 
@@ -107,10 +110,10 @@ function mergeSort(list, comparator) {
     let splitA = []
     let splitB = []
     if (list.length > 1) {
-        splitA = mergeSort(list.slice(0, Math.floor(list.length/2)),comparator)
-        splitB = mergeSort(list.slice(Math.floor(list.length/2)),comparator)
+        splitA = mergeSort(list.slice(0, Math.floor(list.length / 2)), comparator)
+        splitB = mergeSort(list.slice(Math.floor(list.length / 2)), comparator)
     }
-    if( list.length <= 1 ) return list
+    if (list.length <= 1) return list
     let mergedList = []
     while (splitA.length > 0 && splitB.length > 0) {
         a = splitA[0]
@@ -144,7 +147,7 @@ function getScore(letter) {
         }
     }
     if (max == 0) return 0.5
-    return score/max
+    return score / max
 }
 
 function gradient(score) {
@@ -154,22 +157,22 @@ function gradient(score) {
         increase red until we get to yellow at 50%: ffff00
         decrease green for the last 50%: ff0000
     */
-    let percentageGreen = Math.min(1, 2*(score))
-    let percentageRed = Math.min(1, Math.max(0, -2*(score) +2))
-    let hexGreen = Math.round(percentageGreen*255).toString(16).padStart(2, "0")
-    let hexRed = Math.round(percentageRed*255).toString(16).padStart(2, "0")
+    let percentageGreen = Math.min(1, 2 * (score))
+    let percentageRed = Math.min(1, Math.max(0, -2 * (score) + 2))
+    let hexGreen = Math.round(percentageGreen * 255).toString(16).padStart(2, "0")
+    let hexRed = Math.round(percentageRed * 255).toString(16).padStart(2, "0")
     return "#" + hexRed + hexGreen + "00"
 }
 
-function countRemainingSorts() {
+async function countRemainingSorts() {
 
-    const iterations = 100 //more iterations = higher accuracy but more lag on button click
+    const iterations = numIterations.value //more iterations = higher accuracy but more lag on button click
     //maybe make this variable depending on response count or user input?
 
     //runs through the sort, counting sorts that can't be resolved by the comparison cache
     throwCount = 0
-    for(var i = 0; i < iterations; i++) {
-       sortFunction(Object.keys(responses).slice(), Sorter(false, true))
+    for (var i = 0; i < iterations; i++) {
+        sortFunction(Object.keys(responses).slice(), Sorter(false, true))
     }
 
     throwCount = Math.ceil(throwCount * 100 / iterations) //averages the total counts (maybe consider root mean square to avoid backwards jumps?)
@@ -177,7 +180,7 @@ function countRemainingSorts() {
     //sets the value of the progress bar
     progress.max = comparisonCache.length * 100 + throwCount
     progress.value = comparisonCache.length * 100
-    
+
     return throwCount
 }
 
@@ -189,7 +192,7 @@ go.addEventListener("click", e => {
 
     // parse responses
     let responsesLines = responsesText.value.split("\n")
-    responsesLines.filter(line => {return (line != "" && line != " ")})
+    responsesLines.filter(line => { return (line != "" && line != " ") })
     let i = 0
     for (let responseLine of responsesLines) {
         if (letterFlag.checked) {
@@ -209,7 +212,6 @@ go.addEventListener("click", e => {
 
     // prep ui
     updateUI("tierlist")
-
     doTierlists()
 })
 
@@ -224,14 +226,15 @@ function doTierlists() {
             tier[letter] = 0
         }
         updateUI("rank")
+        countRemainingSorts()
         resort()
     } else {
-        
+
 
         unsortedList = createTier(-1)
         tierULs[-1] = unsortedList
 
-        for (let i = tierSet.length; i--; i>=-1) {
+        for (let i = tierSet.length; i--; i >= -1) {
             tierULs[i] = createTier(i)
         }
 
@@ -241,7 +244,7 @@ function doTierlists() {
             element.responseCode = letter
             element.innerText = responses[letter]
             if (yourResponseLetters.includes(letter)) {
-                tierULs[tierSet.length-1].appendChild(element)
+                tierULs[tierSet.length - 1].appendChild(element)
             } else {
                 unsortedList.appendChild(element)
             }
@@ -255,6 +258,7 @@ function doTierlists() {
                 }
             }
             updateUI("rank")
+            countRemainingSorts()
             resort()
         })
     }
@@ -262,7 +266,7 @@ function doTierlists() {
 
 function createTier(i) {
     let header = document.createElement("p")
-    header.innerText = i == -1 ? "Unsorted": tierSet[i]
+    header.innerText = i == -1 ? "Unsorted" : tierSet[i]
     header.style.color = tierColor(i)
     let list = document.createElement("ul")
     list.className = "tier"
@@ -284,7 +288,7 @@ function createTier(i) {
 
 function tierColor(c) {
     if (c == -1) return "#ffffff"
-    return gradient(c/(tierSet.length-1))
+    return gradient(c / (tierSet.length - 1))
 }
 
 picktierset.addEventListener("change", e => {
@@ -298,20 +302,20 @@ function resort() {
         reviewNow(sorted)
     } catch (e) {
         addSavestate("autosave")
-        countRemainingSorts()
-        responseA.innerText = responses[currentResponseA] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseA]) + ")") : "" )
-        responseB.innerText = responses[currentResponseB] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseB]) + ")") : "" )
+        responseA.innerText = responses[currentResponseA] + (wordCount.checked ? (" (" + countWords(responses[currentResponseA]) + ")") : "")
+        responseB.innerText = responses[currentResponseB] + (wordCount.checked ? (" (" + countWords(responses[currentResponseB]) + ")") : "")
         if (smartColors.checked) {
             responseA.style.borderColor = gradient(getScore(currentResponseA))
             responseA.style.color = gradient(getScore(currentResponseA))
             responseB.style.borderColor = gradient(getScore(currentResponseB))
             responseB.style.color = gradient(getScore(currentResponseB))
         }
+        countRemainingSorts()
     }
 }
 
 function reviewNow(sorted) {
-    
+
     for (let letter of sorted) {
         let element = document.createElement("li")
         element.responseCode = letter
@@ -324,24 +328,20 @@ function reviewNow(sorted) {
     updateUI("review")
 }
 
-function Sorter(shouldThrow, random=false) {
+function Sorter(shouldThrow, random = false) {
     return (a, b) => {
-        
+
         if (comparisonCache.includes(a + ">" + b)) {
             return aGb
         } else if (comparisonCache.includes(b + ">" + a)) {
             return bGa
         } else if (yourResponseLetters.includes(a)) {
-            comparisonCache.push(a + ">" + b)
             return aGb
         } else if (yourResponseLetters.includes(b)) {
-            comparisonCache.push(b + ">" + a)
             return bGa
         } else if (tier[a] > tier[b] && tier[b] != -1) {
-            comparisonCache.push(a + ">" + b)
             return aGb
         } else if (tier[b] > tier[a] && tier[a] != -1) {
-            comparisonCache.push(b + ">" + a)
             return bGa
         } else {
             if (shouldThrow) {
@@ -350,16 +350,14 @@ function Sorter(shouldThrow, random=false) {
                 currentResponseB = b
                 throw "Unknown comparison"
             } else {
-		throwCount++;
-                if(random)
-                {
+                throwCount++;
+                if (random) {
                     if (Math.random() > 0.5) {
                         return aGb
                     }
                     return bGa
                 }
-                else
-                {
+                else {
                     if (getScore(a) > getScore(b)) {
                         return aGb
                     }
@@ -395,7 +393,6 @@ function onResponseClick(e) {
     } else {
         comparisonCache.push(currentResponseB + ">" + currentResponseA)
     }
-    
     resort()
 }
 
@@ -415,13 +412,13 @@ jsSort.addEventListener("click", e => {
 document.addEventListener("keydown", e => {
     // if we be ranking
     if (rank.style.display == "block") {
-        switch(e.code) {
+        switch (e.code) {
             case "Digit1":
                 e.preventDefault()
-                onResponseClick({target:{id:"responseA"}})
+                onResponseClick({ target: { id: "responseA" } })
             case "Digit2":
                 e.preventDefault()
-                onResponseClick({target:{id:"responseB"}})
+                onResponseClick({ target: { id: "responseB" } })
             default:
                 return // do nothing
         }
@@ -444,7 +441,8 @@ function addSavestate(name) {
         comparisonCache: comparisonCache,
         responses: responses,
         yourResponseLetters: yourResponseLetters,
-        tier: tier
+        tier: tier,
+        formatVersion: formatVersion
     }))
     let names = JSON.parse(localStorage.getItem("savestates"))
     if (names == null) {
@@ -478,22 +476,13 @@ function updateUI(state) {
 
 save.addEventListener("click", () => {
     let name = prompt("Pick a unique name for your savestate. (don't pick 'autosave' or 'savestates')")
-    if (name != 'autosave' && name != "savestates" && name != null) {
+    if (name != 'autosave' && name != "savestates" && name != null && name == "") {
         addSavestate(name)
     }
 })
 
 undo.addEventListener("click", () => {
-    let notSelf = false
-    do {
-        notSelf = false
-        let popped = comparisonCache.pop()
-        for (let letter of yourResponseLetters) {
-            if (popped.includes(letter) && letter != "") {
-                notSelf = true // if its an auto genned cache, do another
-            }
-        }
-    } while (notSelf)
+    comparisonCache.pop()
     resort()
 })
 
@@ -525,6 +514,20 @@ load.addEventListener("click", () => {
                 }
             }
 
+            if (savestate.formatVersion == undefined || savestate.formatVersion <= 2) {
+                // filter comparisons not done manually by the user, to fix the progress bar when migrating version
+                let comparisonCacheTemp = comparisonCache
+                comparisonCache = []
+                comparisonCache = comparisonCacheTemp.filter(item => {
+                    let x = true
+                    try {
+                        Sorter(true)(item.substring(0, 1), item.substring(2))
+                        x = false
+                    } catch (e) { }
+                    return x
+                })
+            }
+
             updateUI("rank")
 
             resort()
@@ -533,7 +536,7 @@ load.addEventListener("click", () => {
         let deleteBtn = document.createElement("button")
         deleteBtn.innerText = "×"
         deleteBtn.addEventListener("click", () => {
-            if (confirm("Are you sure you want to delete "  + savestateName + "?")) {
+            if (confirm("Are you sure you want to delete " + savestateName + "?")) {
                 let names = JSON.parse(localStorage.getItem("savestates"))
                 localStorage.setItem("savestates", JSON.stringify(names.filter(item => item !== savestateName)))
                 savestates.removeChild(li)
