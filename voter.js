@@ -310,7 +310,7 @@ function resort() {
             responseB.style.borderColor = gradient(getScore(currentResponseB))
             responseB.style.color = gradient(getScore(currentResponseB))
         }
-        countRemainingSorts()
+        setTimeout(countRemainingSorts, 50)
     }
 }
 
