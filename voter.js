@@ -176,7 +176,7 @@ function countRemainingSorts() {
     //runs through the sort, counting sorts that can't be resolved by the comparison cache
     throwCount = 0
     for(var i = 0; i < iterations; i++) {
-       Object.keys(responses).slice().sort(Sorter(false, true))
+       sortFunction(Object.keys(responses).slice(), Sorter(false, true))
     }
 
     throwCount = Math.ceil(throwCount * 100 / iterations) //averages the total counts (maybe consider root mean square to avoid backwards jumps?)
@@ -222,7 +222,6 @@ go.addEventListener("click", e => {
 
 
     // prep ui
-    progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
     updateUI("tierlist")
 
     doTierlists()
