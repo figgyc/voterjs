@@ -103,10 +103,6 @@ function nativeSort(list, comparator) {
     return list.sort(comparator)
 }
 
-function nativePermutations(n) {
-    return n* Math.log2(n) // avg for quicksort, should be accurate enough
-}
-
 function mergeSort(list, comparator) {
     let splitA = []
     let splitB = []
@@ -132,10 +128,7 @@ function mergeSort(list, comparator) {
     return mergedList
 }
 
-let mergePermutations = nativePermutations // i think these are the same?
-
 let sortFunction = mergeSort
-let permutations = mergePermutations
 
 function getScore(letter) {
     // this is a method to get the approximate level of quality of a response
@@ -213,13 +206,6 @@ go.addEventListener("click", e => {
     console.log(yourResponse.value, yourResponseLetters)
     if (yourResponseLetters == [""]) yourResponseLetters = []
     console.log(yourResponseLetters)
-
-    // configure sorter
-    if (jsSort.checked) {
-        sortFunction = nativeSort
-        permutations = nativePermutations
-    }
-
 
     // prep ui
     updateUI("tierlist")
@@ -416,6 +402,16 @@ function onResponseClick(e) {
 responseA.addEventListener("click", onResponseClick)
 responseB.addEventListener("click", onResponseClick)
 
+jsSort.addEventListener("click", e => {
+    // configure sorter
+    if (jsSort.checked) {
+        sortFunction = nativeSort
+    } else {
+        sortFunction = mergeSort
+    }
+
+})
+
 document.addEventListener("keydown", e => {
     // if we be ranking
     if (rank.style.display == "block") {
@@ -434,7 +430,14 @@ document.addEventListener("keydown", e => {
 
 done.addEventListener("click", finish)
 
+// form fill init related code
 customTierset.hidden = (picktierset.value != "custom")
+// configure sorter
+if (jsSort.checked) {
+    sortFunction = nativeSort
+} else {
+    sortFunction = mergeSort
+}
 
 function addSavestate(name) {
     localStorage.setItem(name, JSON.stringify({
