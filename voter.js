@@ -33,6 +33,8 @@ let comparisonCache = [
     // yes its inefficent but idc
 ]
 
+let throwCount = 0 //used to count remaining sorts
+
 let tier = {
     // eg "A": 9 where higher numbers = better tiers
 }
@@ -166,6 +168,26 @@ function gradient(score) {
     return "#" + hexRed + hexGreen + "00"
 }
 
+function countRemainingSorts() {
+
+    const iterations = 100 //more iterations = higher accuracy but more lag on button click
+    //maybe make this variable depending on response count or user input?
+
+    //runs through the sort, counting sorts that can't be resolved by the comparison cache
+    throwCount = 0
+    for(var i = 0; i < iterations; i++) {
+       sortFunction(Object.keys(responses).slice(), Sorter(false, true))
+    }
+
+    throwCount = Math.ceil(throwCount * 100 / iterations) //averages the total counts (maybe consider root mean square to avoid backwards jumps?)
+
+    //sets the value of the progress bar
+    progress.max = comparisonCache.length * 100 + throwCount
+    progress.value = comparisonCache.length * 100
+    
+    return throwCount
+}
+
 go.addEventListener("click", e => {
 
     if (JSON.parse(localStorage.getItem("savestates")).includes("autosave")) {
@@ -200,7 +222,6 @@ go.addEventListener("click", e => {
 
 
     // prep ui
-    progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
     updateUI("tierlist")
 
     doTierlists()
@@ -291,7 +312,7 @@ function resort() {
         reviewNow(sorted)
     } catch (e) {
         addSavestate("autosave")
-        progress.value = comparisonCache.length
+        countRemainingSorts()
         responseA.innerText = responses[currentResponseA] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseA]) + ")") : "" )
         responseB.innerText = responses[currentResponseB] + ( wordCount.checked ? (" (" + countWords(responses[currentResponseB]) + ")") : "" )
         if (smartColors.checked) {
@@ -317,7 +338,7 @@ function reviewNow(sorted) {
     updateUI("review")
 }
 
-function Sorter(shouldThrow) {
+function Sorter(shouldThrow, random=false) {
     return (a, b) => {
         
         if (comparisonCache.includes(a + ">" + b)) {
@@ -343,10 +364,21 @@ function Sorter(shouldThrow) {
                 currentResponseB = b
                 throw "Unknown comparison"
             } else {
-                if (getScore(a) > getScore(b)) {
-                    return aGb
+		throwCount++;
+                if(random)
+                {
+                    if (Math.random() > 0.5) {
+                        return aGb
+                    }
+                    return bGa
                 }
-                return bGa
+                else
+                {
+                    if (getScore(a) > getScore(b)) {
+                        return aGb
+                    }
+                    return bGa
+                }
             }
         }
     }
@@ -374,12 +406,10 @@ function finish() {
 function onResponseClick(e) {
     if (e.target.id == "responseA") {
         comparisonCache.push(currentResponseA + ">" + currentResponseB)
-        progress.value = comparisonCache.length
     } else {
         comparisonCache.push(currentResponseB + ">" + currentResponseA)
-        progress.value = comparisonCache.length
     }
-
+    
     resort()
 }
 
@@ -492,7 +522,6 @@ load.addEventListener("click", () => {
                 }
             }
 
-            progress.max = permutations(Object.keys(responses).length) // this is an upper bound afaik, the browser's sort algo may be more efficient
             updateUI("rank")
 
             resort()
