@@ -414,7 +414,7 @@ let lastKeyTime = 0
 document.addEventListener("keydown", e => {
     // if we be ranking
     if (rank.style.display == "block") {
-        if (lastKeyTime+500 < new Date().getTime()) {
+        if (lastKeyTime+100 < new Date().getTime()) {
             lastKeyTime = new Date().getTime() // debounce
             switch (e.code) {
                 case "Digit1":
