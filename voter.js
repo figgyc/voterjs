@@ -409,18 +409,25 @@ jsSort.addEventListener("click", e => {
 
 })
 
+let lastKeyTime = 0
+
 document.addEventListener("keydown", e => {
     // if we be ranking
     if (rank.style.display == "block") {
-        switch (e.code) {
-            case "Digit1":
-                e.preventDefault()
-                onResponseClick({ target: { id: "responseA" } })
-            case "Digit2":
-                e.preventDefault()
-                onResponseClick({ target: { id: "responseB" } })
-            default:
-                return // do nothing
+        if (lastKeyTime+500 < new Date().getTime()) {
+            lastKeyTime = new Date().getTime() // debounce
+            switch (e.code) {
+                case "Digit1":
+                    e.preventDefault()
+                    onResponseClick({ target: { id: "responseA" } })
+                    return
+                case "Digit2":
+                    e.preventDefault()
+                    onResponseClick({ target: { id: "responseB" } })
+                    return
+                default:
+                    return // do nothing
+            }
         }
     }
 })
