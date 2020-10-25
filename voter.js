@@ -207,7 +207,7 @@ go.addEventListener("click", e => {
     }
     yourResponseLetters = yourResponse.value.replace(" ", "").split(",")
     console.log(yourResponse.value, yourResponseLetters)
-    if (yourResponseLetters == [""]) yourResponseLetters = []
+    if (yourResponseLetters[0] == "" && yourResponseLetters.length == 1) yourResponseLetters = []
     console.log(yourResponseLetters)
 
     // prep ui
@@ -219,7 +219,7 @@ function doTierlists() {
     if (picktierset.value != "custom") {
         tierSet = tierSets[picktierset.value]
     } else {
-        tierSet = customTierset.value.split(",").trim()
+        tierSet = customTierset.value.split(",")
     }
     if (tierSet.length == 1) {
         for (const letter of Object.keys(responses)) {
