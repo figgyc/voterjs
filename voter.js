@@ -63,6 +63,7 @@ let savestates = document.querySelector("#savestates")
 let intro = document.querySelector("#intro")
 let tierlist = document.querySelector("#tierlist")
 let review = document.querySelector("#review")
+let importUI = document.querySelector("#import")
 
 // DOM stuff
 let responsesText = document.querySelector("#responses")
@@ -90,6 +91,8 @@ let leftBox = document.querySelector("#leftBox")
 let tiers = document.querySelector("#tiers")
 let customTierset = document.querySelector("#customTierset")
 let numIterations = document.querySelector("#numIterations")
+let importBtn = document.querySelector("#importBtn")
+let importTextarea = document.querySelector("#importTextarea")
 
 let responses = {
 
@@ -477,6 +480,7 @@ function updateUI(state) {
     rank.style.display = blockNone(state == "rank")
     review.style.display = blockNone(state == "review")
     outputBox.style.display = blockNone(state == "output")
+    importUI.style.display = blockNone(state == "import")
 }
 
 /* Save/load system */
@@ -493,7 +497,32 @@ undo.addEventListener("click", () => {
     resort()
 })
 
+importBtn.addEventListener("click", () => {
+    if (importTextarea.innerText == "") {
+        let output = {}
+        output.savestates = JSON.parse(localStorage.savestates)
+        output.saves = {}
+        for (let name of output.savestates) {
+            output.saves[name] = JSON.parse(localStorage.getItem(name))
+        }
+        importTextarea.innerText = JSON.stringify(output)
+    }
+    else {
+        let input = JSON.parse(importTextarea.innerText)
+        let savestates = JSON.parse(localStorage.getItem("savestates"))
+        for (let item of input.savestates) {
+            if (!savestates.includes(item)) savestates.push(item)
+        }
+        localStorage.setItem(JSON.stringify("savestates", savestates))
+        for (let name of input.saves) {
+            localStorage.setItem(name, JSON.stringify(input.saves))
+        }
+    }
+})
 
+document.querySelector("#importUI").addEventListener("click", () => {
+    updateUI("import")
+})
 
 load.addEventListener("click", () => {
 

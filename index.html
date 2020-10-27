@@ -34,11 +34,18 @@
         <input type="checkbox" id="wordcount" name="wordcount" checked /> <label for="wordcount">Show word count (may not always be 100% right, always double check)</label><br>
         <input type="checkbox" id="smartColors" name="smartColors" checked /> <label for="smartColors">Smart colors (based on previous voting, better responses are more green)</label><br>
         <input type="checkbox" id="jsSort" name="jsSort" /> <label for="jsSort">Use legacy sorting algorithm (not recommended)</label><br>
-        <button id="go">Go</button> <button id="load">Load savestate</button> <br> <br>
+        <button id="go">Go</button> <button id="load">Load savestate</button> <button id="importUI">Import/export data</button> <br> <br>
     </span>
 
     <ul id="savestates" style="display: none">
     </ul>
+
+    <div id="import" style="display:none">
+        <h2>Import/export</h2>
+        <p>Here you can move Voter.js data between the old and new domain, or even between devices if you want. This won't delete any existing data except the autosave and any savestates with the same name that you already have. If the box is blank pressing the button will export your data otherwise it will import.</p>
+        <textarea placeholder="Data" id="importTextarea"></textarea>
+        <button id="importBtn">Import/export</button>
+    </div>
 
     <div id="tierlist" style="display:none">
         <h2>Rate responses</h2>
