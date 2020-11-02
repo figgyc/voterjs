@@ -487,7 +487,7 @@ function updateUI(state) {
 
 save.addEventListener("click", () => {
     let name = prompt("Pick a unique name for your savestate. (don't pick 'autosave' or 'savestates')")
-    if (name != 'autosave' && name != "savestates" && name != null && name == "") {
+    if (name != 'autosave' && name != "savestates" && name != null && name != "") {
         addSavestate(name)
     }
 })
