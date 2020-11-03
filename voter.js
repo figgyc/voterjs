@@ -498,17 +498,17 @@ undo.addEventListener("click", () => {
 })
 
 importBtn.addEventListener("click", () => {
-    if (importTextarea.innerText == "") {
+    if (importTextarea.value == "") {
         let output = {}
         output.savestates = JSON.parse(localStorage.savestates)
         output.saves = {}
         for (let name of output.savestates) {
             output.saves[name] = JSON.parse(localStorage.getItem(name))
         }
-        importTextarea.innerText = JSON.stringify(output)
+        importTextarea.value = JSON.stringify(output)
     }
     else {
-        let input = JSON.parse(importTextarea.innerText)
+        let input = JSON.parse(importTextarea.value)
         let savestates = JSON.parse(localStorage.getItem("savestates"))
         for (let item of input.savestates) {
             if (!savestates.includes(item)) savestates.push(item)
