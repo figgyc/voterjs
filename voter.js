@@ -513,9 +513,9 @@ importBtn.addEventListener("click", () => {
         for (let item of input.savestates) {
             if (!savestates.includes(item)) savestates.push(item)
         }
-        localStorage.setItem(JSON.stringify("savestates", savestates))
-        for (let name of input.saves) {
-            localStorage.setItem(name, JSON.stringify(input.saves))
+        localStorage.setItem("savestates", JSON.stringify(savestates))
+        for (let item of input.savestates) {
+            localStorage.setItem(item, JSON.stringify(input.saves[item]))
         }
     }
 })
