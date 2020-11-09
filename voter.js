@@ -93,6 +93,7 @@ let customTierset = document.querySelector("#customTierset")
 let numIterations = document.querySelector("#numIterations")
 let importBtn = document.querySelector("#importBtn")
 let importTextarea = document.querySelector("#importTextarea")
+let prompt = document.querySelector("#prompt")
 
 let responses = {
 
@@ -452,7 +453,8 @@ function addSavestate(name) {
         responses: responses,
         yourResponseLetters: yourResponseLetters,
         tier: tier,
-        formatVersion: formatVersion
+        formatVersion: formatVersion,
+        prompt: prompt.value
     }))
     let names = JSON.parse(localStorage.getItem("savestates"))
     if (names == null) {
@@ -542,6 +544,8 @@ load.addEventListener("click", () => {
             responses = savestate.responses
             if (savestate.yourResponseLetters != undefined)
                 yourResponseLetters = savestate.yourResponseLetters
+            if (savestate.prompt != undefined)
+                prompt.value = savestate.prompt
             if (savestate.tier != undefined) {
                 tier = savestate.tier
             } else {

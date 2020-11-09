@@ -18,7 +18,7 @@ textarea {
     resize: none;
     height: 10em;
 }
-#responseA, #responseB, #yours, #progress, #output, textarea, #rank, .tiersetFlex {
+#responseA, #responseB, #prompt, #yours, #progress, #output, textarea, #rank, .tiersetFlex {
     width: 100%;
     max-width: 1200px;
 }
