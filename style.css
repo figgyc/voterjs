@@ -15,12 +15,16 @@ input, button {
     min-height: 1.5em;
 }
 textarea {
-    resize: none;
+    resize: vertical;
     height: 10em;
 }
 #responseA, #responseB, #prompt, #yours, #progress, #output, textarea, #rank, .tiersetFlex {
     width: 100%;
     max-width: 1200px;
+}
+
+#prompt {
+    height:2em;
 }
 
 #responseA, #responseB, progress {
