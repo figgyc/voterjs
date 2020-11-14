@@ -1,22 +1,59 @@
-html {
-    color: #ccc;
-    background: #050500;
-    font-family: Consolas, monospace !important;
-}
-input, button, textarea, select {
-    background: #101015;
-    color: #eee;
-    border: 1px solid white;
-    font-family: Consolas, monospace !important;
-    font-size: 12pt;
+html.theme-classic {
+    --color: #cccccc;
+    --background: #050500;
+    --inputbg: #101015;
+    --inputcolor: #eeeeee;
+    --inputborder: #ffffff;
+    --progressbg: #000000;
+    --font-family: Consolas, monospace !important;
+    --responseborderwidth: 1px;
 }
 
-input, button {
+html.theme-light {
+    --color: #101010;
+    --background: #fafafa;
+    --inputbg: #ffffff;
+    --inputcolor: #101015;
+    --inputborder: #aaaaaa;
+    --progressbg: #202020;
+    --font-family: Bahnschrift, Roboto, monospace !important;
+    --responseborderwidth: 4px;
+}
+
+html.theme-dark {
+    --color: #cccccc;
+    --background: #152222;
+    --inputbg: #101015;
+    --inputcolor: #eeeeee;
+    --inputborder: #050505;
+    --progressbg: #000000;
+    --font-family: Bahnschrift, Roboto, monospace !important;
+    --responseborderwidth: 2px;
+}
+
+html {
+    background: var(--background);
+    color: var(--color);
+    font-family: var(--font-family);
+    font-weight: 300;
+}
+
+input, button, textarea, select {
+    background: var(--inputbg);
+    color: var(--inputcolor);
+    border: 1px solid var(--inputborder);
+    font-family: inherit;
+    font-size: 12pt;
+    font-weight: 400;
+}
+
+input:not(input[type=checkbox]), button {
     min-height: 1.5em;
 }
 textarea {
     resize: vertical;
     height: 10em;
+    font-weight: 300;
 }
 #responseA, #responseB, #prompt, #yours, #progress, #output, textarea, #rank, .tiersetFlex {
     width: 100%;
@@ -34,6 +71,11 @@ textarea {
 #responseA, #responseB {
     height: 25%;
     max-height: 4em;
+    border-width: var(--responseborderwidth) !important;
+}
+
+html.theme-light #responseA, html.theme-light #responseB {
+    color: var(--inputcolor) !important;
 }
 
 progress[value]  {
@@ -42,11 +84,11 @@ progress[value]  {
     appearance: none;
     border: 1px solid white;
     height: 1.5em;
-    background-color:black;
+    background-color:var(--progressbg);
 }
 
 progress::-webkit-progress-bar {
-    background: black;
+    background: var(--progressbg);
 }
 
 progress::-moz-progress-bar, progress::-webkit-progress-value {

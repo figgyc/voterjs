@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en" class="theme-classic">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +7,11 @@
     <link rel="icon" type="image/svg" href="icon.svg" />
 </head>
 <body>
-    <h2>figgyc's Voter.js <small style="font-size: 8pt">now with better sorting, keyboard shortcuts (try 1 and 2) and rating/tierlists!</small></h2>
+    <h2>figgyc's Voter.js <small style="font-size: 8pt">now with themes!</small></h2>
     
     <span id="intro">
         <div id="explanation">
             <small>additional thanks to <a href="https://stackoverflow.com/a/2878726/2758631">these</a> <a href="https://stackoverflow.com/a/40385425/2758631">two</a> whose code i took from stack overflow (cc-by sa 4), check out the <a href="https://github.com/figgyc/voterjs">source code</a>, also shoutout to 96 LB for the original voter.exe idea. send ideas/bugs to figgyc#0168 on Discord </small> <br />
-            <u>I have implemented quite significant changes to the voter.js backend, please verify your votes and if you notice anything off DM figgyc#0168 as soon as you notice. Thanks.</u> <br />
             <strong><a href="help.html">View the tutorial</a>, it even has a mini video</strong>
         </div>
         <textarea placeholder="Responses (one per line)" id="responses"></textarea> <br>
@@ -27,10 +26,19 @@
                 <option value="lettersDeltas">Grades A+ to D-</option>
                 <option value="lettersDeltasS">Grades S+ to D-</option>
                 <option value="custom">Custom</option>
-            </select> <label for="picktierset"> Enable tier listing/ranking </label>
+            </select>&nbsp;<label for="picktierset"> Enable tier listing/ranking </label>
             <input type="text" id="customTierset" placeholder="Separate with commas, lowest to highest" hidden/>
         </div>
-        <input type="number" id="numIterations" name="numIterations" value="50" min="1" /> <label for="numIterations">Progress accuracy (lower numbers reduce lag)</label> <br>
+        <div class="tiersetFlex">
+            <select name="theme" id="theme" value="classic">
+                <option value="classic">Classic</option>
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+            </select>&nbsp;<label for="theme"> Theme </label>
+            <input type="text" id="customTierset" placeholder="Separate with commas, lowest to highest" hidden/>
+        </div>
+        <!-- this is hidden because "async" progress should make it unnecessary-->
+        <input type="number" id="numIterations" name="numIterations" value="50" min="1" style="display: none;" /> <label for="numIterations" style="display: none;">Progress accuracy (lower numbers reduce lag)</label> <br>
         <input type="checkbox" id="letter" name="letter" checked /> <label for="letter">TWOW mode (Responses are input with letters at the start)</label> <br>
         <input type="checkbox" id="wordcount" name="wordcount" checked /> <label for="wordcount">Show word count (may not always be 100% right, always double check)</label><br>
         <input type="checkbox" id="smartColors" name="smartColors" checked /> <label for="smartColors">Smart colors (based on previous voting, better responses are more green)</label><br>

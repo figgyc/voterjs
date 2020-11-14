@@ -299,6 +299,15 @@ picktierset.addEventListener("change", e => {
     customTierset.hidden = (e.target.value != "custom")
 })
 
+if (localStorage.getItem("theme") == null || localStorage.getItem("theme") == undefined) localStorage.setItem("theme", "classic")
+let theme = document.querySelector("#theme")
+document.querySelector("html").className = "theme-" + localStorage.getItem("theme")
+theme.value = localStorage.getItem("theme")
+theme.addEventListener("change", e => {
+    document.querySelector("html").className = "theme-" + theme.value
+    localStorage.setItem("theme", theme.value)
+})
+
 function resort() {
     try {
         let sorted = sortFunction(Object.keys(responses).slice(), Sorter(true))
@@ -489,7 +498,7 @@ function updateUI(state) {
 
 save.addEventListener("click", () => {
     let name = window.prompt("Pick a unique name for your savestate. (don't pick 'autosave' or 'savestates')")
-    if (name != 'autosave' && name != "savestates" && name != null && name != "") {
+    if (name != 'autosave' && name != "savestates" && name != null && name != "" && name != "theme") {
         addSavestate(name)
     }
 })
