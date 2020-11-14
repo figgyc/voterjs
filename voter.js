@@ -291,7 +291,7 @@ function createTier(i) {
 }
 
 function tierColor(c) {
-    if (c == -1) return "#ffffff"
+    if (c == -1) return "initial"
     return gradient(c / (tierSet.length - 1))
 }
 
