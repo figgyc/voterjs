@@ -258,7 +258,7 @@ function doTierlists() {
             for (let tierCode of Object.keys(tierULs)) {
                 for (let responseElement of tierULs[tierCode].children) {
                     console.log(responseElement, responseElement.responseCode)
-                    tier[responseElement.responseCode] = tierCode
+                    tier[responseElement.responseCode] = parseInt(tierCode)
                 }
             }
             updateUI("rank")
@@ -427,7 +427,7 @@ let lastKeyTime = 0
 document.addEventListener("keydown", e => {
     // if we be ranking
     if (rank.style.display == "block") {
-        if (lastKeyTime+100 < new Date().getTime()) {
+        if (lastKeyTime + 100 < new Date().getTime()) {
             lastKeyTime = new Date().getTime() // debounce
             switch (e.code) {
                 case "Digit1":
