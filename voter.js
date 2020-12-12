@@ -348,9 +348,9 @@ function Sorter(shouldThrow, random = false) {
             return aGb
         } else if (comparisonCache.includes(b + ">" + a)) {
             return bGa
-        } else if (yourResponseLetters.includes(a)) {
+        } else if (yourResponseLetters.includes(a) && !yourResponseLetters.includes(b)) {
             return aGb
-        } else if (yourResponseLetters.includes(b)) {
+        } else if (yourResponseLetters.includes(b) && !yourResponseLetters.includes(a)) {
             return bGa
         } else if (tier[a] > tier[b] && tier[b] != -1) {
             return aGb
