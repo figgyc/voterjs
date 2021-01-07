@@ -41,7 +41,7 @@ let tier = {
 
 let tierULs = {}
 
-let formatVersion = 2 // v2: don't cache auto guesses
+let formatVersion = 3 // v2: don't cache auto guesses, v3: rank saving
 
 const tierSets =
 {
@@ -80,6 +80,7 @@ let progress = document.querySelector("#progress")
 let explanation = document.querySelector("#explanation")
 let reviewList = document.querySelector("#reviewList")
 let save = document.querySelector("#save")
+let saveTier = document.querySelector("#savetier")
 let undo = document.querySelector("#undo")
 let load = document.querySelector("#load")
 let smartColors = document.querySelector("#smartColors")
@@ -225,15 +226,20 @@ function doTierlists() {
     } else {
         tierSet = customTierset.value.split(",")
     }
-    if (tierSet.length == 1) {
-        for (const letter of Object.keys(responses)) {
-            tier[letter] = 0
+    for (const letter of Object.keys(responses)) {
+        if (tier[letter] == undefined) {
+            if (yourResponseLetters.includes(letter)) {
+                tier[letter] = tierSet.length - 1
+            } else {
+                tier[letter] = -1
+            }
         }
+    }
+    if (tierSet.length == 1) {
         updateUI("rank")
         countRemainingSorts()
         resort()
     } else {
-
 
         unsortedList = createTier(-1)
         tierULs[-1] = unsortedList
@@ -247,24 +253,23 @@ function doTierlists() {
             let element = document.createElement("li")
             element.responseCode = letter
             element.innerText = responses[letter]
-            if (yourResponseLetters.includes(letter)) {
-                tierULs[tierSet.length - 1].appendChild(element)
-            } else {
-                unsortedList.appendChild(element)
-            }
+            tierULs[tier[letter]].appendChild(element)
         }
 
         sortButton.addEventListener("click", () => {
-            for (let tierCode of Object.keys(tierULs)) {
-                for (let responseElement of tierULs[tierCode].children) {
-                    console.log(responseElement, responseElement.responseCode)
-                    tier[responseElement.responseCode] = parseInt(tierCode)
-                }
-            }
+            updateTiers()
             updateUI("rank")
             countRemainingSorts()
             resort()
         })
+    }
+}
+
+function updateTiers() {
+    for (let tierCode of Object.keys(tierULs)) {
+        for (let responseElement of tierULs[tierCode].children) {
+            tier[responseElement.responseCode] = parseInt(tierCode)
+        }
     }
 }
 
@@ -463,7 +468,8 @@ function addSavestate(name) {
         yourResponseLetters: yourResponseLetters,
         tier: tier,
         formatVersion: formatVersion,
-        prompt: prompt.value
+        prompt: prompt.value,
+        isRanking: tierlist.style.display == "block"
     }))
     let names = JSON.parse(localStorage.getItem("savestates"))
     if (names == null) {
@@ -499,6 +505,14 @@ function updateUI(state) {
 save.addEventListener("click", () => {
     let name = window.prompt("Pick a unique name for your savestate. (don't pick 'autosave' or 'savestates')")
     if (name != 'autosave' && name != "savestates" && name != null && name != "" && name != "theme") {
+        addSavestate(name)
+    }
+})
+
+saveTier.addEventListener("click", () => {
+    let name = window.prompt("Pick a unique name for your savestate. (don't pick 'autosave' or 'savestates')")
+    if (name != 'autosave' && name != "savestates" && name != null && name != "" && name != "theme") {
+        updateTiers()
         addSavestate(name)
     }
 })
@@ -551,6 +565,9 @@ load.addEventListener("click", () => {
             let savestate = JSON.parse(localStorage.getItem(savestateName))
             comparisonCache = savestate.comparisonCache
             responses = savestate.responses
+            let isRanking = false
+            if (savestate.isRanking != undefined)
+                isRanking = savestate.isRanking
             if (savestate.yourResponseLetters != undefined)
                 yourResponseLetters = savestate.yourResponseLetters
             if (savestate.prompt != undefined)
@@ -576,8 +593,12 @@ load.addEventListener("click", () => {
                     return x
                 })
             }
-
-            updateUI("rank")
+            if (isRanking) {
+                updateUI("tierlist")
+                doTierlists()
+            } else {
+                updateUI("rank")
+            }
 
             resort()
         })
