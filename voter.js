@@ -283,7 +283,11 @@ function createTier(i) {
     list.style.borderColor = tierColor(i)
     Sortable.create(list, {
         animation: 150,
-        group: "tierlisting"
+        group: "tierlisting",
+        onEnd: () => {
+            updateTiers()
+            addSavestate("autosave")
+        }
     })
     if (i == -1) {
         leftBox.appendChild(header)
