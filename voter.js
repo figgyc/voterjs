@@ -473,7 +473,9 @@ function addSavestate(name) {
         tier: tier,
         formatVersion: formatVersion,
         prompt: prompt.value,
-        isRanking: tierlist.style.display == "block"
+        isRanking: tierlist.style.display == "block",
+        customTierset: customTierset.value,
+        picktierset: picktierset.value
     }))
     let names = JSON.parse(localStorage.getItem("savestates"))
     if (names == null) {
@@ -576,6 +578,10 @@ load.addEventListener("click", () => {
                 yourResponseLetters = savestate.yourResponseLetters
             if (savestate.prompt != undefined)
                 prompt.value = savestate.prompt
+            if (savestate.customTierset != undefined)
+                customTierset.value = savestate.customTierset
+            if (savestate.picktierset != undefined)
+                picktierset.value = savestate.picktierset
             if (savestate.tier != undefined) {
                 tier = savestate.tier
             } else {
